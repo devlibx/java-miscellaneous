@@ -1,0 +1,127 @@
+{
+  "namespace": "io.gitbub.devlibx.jm.avro.month",
+  "type": "record",
+  "name": "MonthAggregation",
+  "fields": [
+    {
+      "name": "ParentContainer",
+      "type": {
+        "type": "array",
+        "items": {
+          "type": "record",
+          "namespace": "io.gitbub.devlibx.jm.avro.month.child",
+          "name": "Container",
+          "fields": [
+            {
+              "name": "counter",
+              "type": [
+                "null",
+                "int"
+              ],
+              "default": null
+            },
+            {
+              "name": "aggregate",
+              "type": [
+                "null",
+                "double"
+              ],
+              "default": null
+            },
+            {
+              "name": "counter_secondary",
+              "type": [
+                "null",
+                "int"
+              ],
+              "default": null
+            },
+            {
+              "name": "aggregate_secondary",
+              "type": [
+                "null",
+                "double"
+              ],
+              "default": null
+            },
+            {
+              "name": "str",
+              "type": [
+                "null",
+                "string"
+              ],
+              "default": null
+            },
+            {
+              "name": "udf1",
+              "type": [
+                "null",
+                "string",
+                "int",
+                "double"
+              ],
+              "default": null
+            },
+            {
+              "name": "udf2",
+              "type": [
+                "null",
+                "string",
+                "int",
+                "double"
+              ],
+              "default": null
+            },
+            {
+              "name": "udf3",
+              "type": [
+                "null",
+                "string",
+                "int",
+                "double"
+              ],
+              "default": null
+            },
+            {
+              "name": "udf4",
+              "type": [
+                "null",
+                "string",
+                "int",
+                "double"
+              ],
+              "default": null
+            },
+            {
+              "name": "udf5",
+              "type": [
+                "null",
+                "string",
+                "int",
+                "double"
+              ],
+              "default": null
+            }
+          ]
+        }
+      },
+      "default": []
+    },
+    {
+      "name": "data",
+      "type": [
+        "null",
+        {
+          "type": "map",
+          "values": "io.gitbub.devlibx.jm.avro.month.child.Container"
+        }
+      ],
+      "default": null
+    },
+    {
+      "name": "version",
+      "type": "int",
+      "default": 1
+    }
+  ]
+}

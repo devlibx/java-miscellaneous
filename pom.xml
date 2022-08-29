@@ -22,7 +22,19 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <lombok.version>1.18.16</lombok.version>
         <easy.version>0.0.83</easy.version>
+        <avro.version>1.7.7</avro.version>
     </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>io.github.devlibx.easy</groupId>
+            <artifactId>helper</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.avro</groupId>
+            <artifactId>avro</artifactId>
+        </dependency>
+    </dependencies>
 
     <dependencyManagement>
         <dependencies>
@@ -31,6 +43,13 @@
                 <artifactId>helper</artifactId>
                 <version>${easy.version}</version>
             </dependency>
+
+            <dependency>
+                <groupId>org.apache.avro</groupId>
+                <artifactId>avro</artifactId>
+                <version>${avro.version}</version>
+            </dependency>
+
         </dependencies>
     </dependencyManagement>
 
@@ -59,6 +78,29 @@
             <plugin>
                 <artifactId>maven-failsafe-plugin</artifactId>
                 <version>2.22.2</version>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.avro</groupId>
+                <artifactId>avro-maven-plugin</artifactId>
+                <version>1.7.7</version>
+                <executions>
+                    <execution>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>schema</goal>
+                        </goals>
+                        <configuration>
+                            <sourceDirectory>${project.basedir}/src/main/avro/</sourceDirectory>
+                            <outputDirectory>${project.basedir}/src/main/java/</outputDirectory>
+                            <includes>
+                                <include>**/*.avsc</include>
+                            </includes>
+                            <imports>
+                                <import>${project.basedir}/src/main/avro/month-aggregation-schema-v1.avsc</import>
+                            </imports>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
 
