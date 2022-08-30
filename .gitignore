@@ -1,6 +1,11 @@
 .idea
 target
+*.ipr
+*.iml
+*.iws
 java-miscellaneous.iml
 java-miscellaneous.ipr
 java-miscellaneous.iws
 do_not_commit.sh
+avro/target
+java-util/target
