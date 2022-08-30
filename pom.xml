@@ -6,7 +6,7 @@
     <groupId>io.github.devlibx.miscellaneous</groupId>
     <artifactId>parent</artifactId>
     <packaging>pom</packaging>
-    <version>0.0.5-SNAPSHOT</version>
+    <version>0.0.6-SNAPSHOT</version>
     <modules>
         <module>java-util</module>
         <module>avro</module>
