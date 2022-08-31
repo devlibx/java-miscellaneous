@@ -1,11 +1,3 @@
-
-# Java Utils Package
-
-### TimeWindowDataAggregation Usage
-
-This is used to aggregate day, hours, and min data
-
-```java
 package io.github.devlibx.miscellaneous.util.aggregation;
 
 import io.gitbub.devlibx.easy.helper.json.JsonUtils;
@@ -61,5 +53,3 @@ public class Demo {
         DateTime timestamp;
     }
 }
-```
----

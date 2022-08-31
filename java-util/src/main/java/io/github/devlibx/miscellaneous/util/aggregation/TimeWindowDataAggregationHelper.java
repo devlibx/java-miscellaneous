@@ -18,7 +18,10 @@ public class TimeWindowDataAggregationHelper<T> {
         this.minutesCount = minutesCount;
     }
 
-    public void add(TimeWindowDataAggregation aggregation, DateTime time) {
+    public void processDayHourMinutes(TimeWindowDataAggregation aggregation, DateTime currentTime, T event, DateTime eventTime, IAggregationUpdater<T> updater) {
+        processDay(aggregation, currentTime, event, eventTime, updater);
+        processHours(aggregation, currentTime, event, eventTime, updater);
+        processMinutes(aggregation, currentTime, event, eventTime, updater);
     }
 
     public void processDay(TimeWindowDataAggregation aggregation, DateTime currentTime, T event, DateTime eventTime, IAggregationUpdater<T> updater) {
