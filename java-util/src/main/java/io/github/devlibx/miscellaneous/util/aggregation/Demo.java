@@ -10,7 +10,9 @@ public class Demo {
 
     public static void main(String[] args) {
         TimeWindowDataAggregation aggregation = new TimeWindowDataAggregation();
-        TimeWindowDataAggregationHelper<InputObject> helper = new TimeWindowDataAggregationHelper<>(31, 24, 60);
+        TimeWindowDataAggregationHelper<InputObject> helper = new TimeWindowDataAggregationHelper<>(
+                TimeWindowDataAggregationHelper.Config.builder().dayAggregationWindow(31).hourAggregationWindow(24).minuteAggregationWindow(60).build()
+        );
 
         // Process aggregation updates
         IAggregationUpdater<InputObject> updater = (data, key, event) -> {

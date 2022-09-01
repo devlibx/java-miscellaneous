@@ -1,6 +1,11 @@
 package io.github.devlibx.miscellaneous.util.aggregation;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import io.gitbub.devlibx.easy.helper.map.StringObjectMap;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.joda.time.DateTime;
 
 import java.util.ArrayList;
@@ -12,10 +17,10 @@ public class TimeWindowDataAggregationHelper<T> {
     private final int hoursCount;
     private final int minutesCount;
 
-    public TimeWindowDataAggregationHelper(int daysCount, int hoursCount, int minutesCount) {
-        this.daysCount = daysCount;
-        this.hoursCount = hoursCount;
-        this.minutesCount = minutesCount;
+    public TimeWindowDataAggregationHelper(Config config) {
+        this.daysCount = config.dayAggregationWindow;
+        this.hoursCount = config.hourAggregationWindow;
+        this.minutesCount = config.minuteAggregationWindow;
     }
 
     public void processDayHourMinutes(TimeWindowDataAggregation aggregation, DateTime currentTime, T event, DateTime eventTime, IAggregationUpdater<T> updater) {
@@ -108,5 +113,17 @@ public class TimeWindowDataAggregationHelper<T> {
         default void expired(StringObjectMap data, String key, T event) {
             data.remove(key);
         }
+    }
+
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    @Builder
+    public static class Config {
+        private int dayAggregationWindow;
+        private int dayHourAggregationWindow;
+        private int hourAggregationWindow;
+        private int minuteAggregationWindow;
     }
 }

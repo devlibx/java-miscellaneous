@@ -16,7 +16,9 @@ public class TimeWindowDataAggregationHelperTest {
 
     @Test
     public void testGetKeys() {
-        TimeWindowDataAggregationHelper<String> helper = new TimeWindowDataAggregationHelper<>(31, 24, 60);
+        TimeWindowDataAggregationHelper<String> helper = new TimeWindowDataAggregationHelper<>(
+                TimeWindowDataAggregationHelper.Config.builder().dayAggregationWindow(31).hourAggregationWindow(24).minuteAggregationWindow(60).build()
+        );
         List<String> days = helper.getDayKeys(timeToUse);
         Assertions.assertEquals(31, days.size());
         Assertions.assertEquals("7-9", days.get(0));
@@ -36,7 +38,9 @@ public class TimeWindowDataAggregationHelperTest {
     @Test
     public void testProcessDay() {
         TimeWindowDataAggregation aggregation = new TimeWindowDataAggregation();
-        TimeWindowDataAggregationHelper<String> helper = new TimeWindowDataAggregationHelper<>(31, 24, 60);
+        TimeWindowDataAggregationHelper<String> helper = new TimeWindowDataAggregationHelper<>(
+                TimeWindowDataAggregationHelper.Config.builder().dayAggregationWindow(31).hourAggregationWindow(24).minuteAggregationWindow(60).build()
+        );
 
         // Process aggregation updates
         IAggregationUpdater<String> updater = (data, key, event) -> data.put(key, "processed-" + event);
@@ -69,7 +73,9 @@ public class TimeWindowDataAggregationHelperTest {
     @Test
     public void testProcessHours() {
         TimeWindowDataAggregation aggregation = new TimeWindowDataAggregation();
-        TimeWindowDataAggregationHelper<String> helper = new TimeWindowDataAggregationHelper<>(31, 24, 60);
+        TimeWindowDataAggregationHelper<String> helper = new TimeWindowDataAggregationHelper<>(
+                TimeWindowDataAggregationHelper.Config.builder().dayAggregationWindow(31).hourAggregationWindow(24).minuteAggregationWindow(60).build()
+        );
 
         // Process aggregation updates
         IAggregationUpdater<String> updater = (data, key, event) -> data.put(key, "processed-" + event);
@@ -101,7 +107,9 @@ public class TimeWindowDataAggregationHelperTest {
     @Test
     public void testProcessMinutes() {
         TimeWindowDataAggregation aggregation = new TimeWindowDataAggregation();
-        TimeWindowDataAggregationHelper<String> helper = new TimeWindowDataAggregationHelper<>(31, 24, 60);
+        TimeWindowDataAggregationHelper<String> helper = new TimeWindowDataAggregationHelper<>(
+                TimeWindowDataAggregationHelper.Config.builder().dayAggregationWindow(31).hourAggregationWindow(24).minuteAggregationWindow(60).build()
+        );
 
         // Process aggregation updates
         IAggregationUpdater<String> updater = (data, key, event) -> data.put(key, "processed-" + event);

@@ -27,6 +27,8 @@ public class Demo {
                     : data.getLong(key);
             data.put(key, existingValue + 1);
         };
+        
+        Config c = Config.enabD()
 
         // Process event 1
         DateTime now = DateTime.now();
@@ -35,7 +37,7 @@ public class Demo {
         helper.processHours(aggregation, now, inputObject, inputObject.timestamp, updater);
         helper.processMinutes(aggregation, now, inputObject, inputObject.timestamp, updater);
         System.out.println(JsonUtils.asJson(aggregation));
-        // >> OUTPUT = {"days":{"8-31":1},"hours":{"31-13":1},"minutes":{"13-49":1}}
+        // >> OUTPUT = {"days":{"8-31":1}, "days_hour":{"8-31":{"1": 2, "2": 4}},, "hours":{"31-13":1},"minutes":{"13-49":1}}
 
         // Process event 2
         now = DateTime.now();

@@ -13,7 +13,9 @@ public class AggregateFunctionTest {
     @Test
     public void testDefaultCountAggregateFunction() {
         TimeWindowDataAggregation aggregation = new TimeWindowDataAggregation();
-        TimeWindowDataAggregationHelper<Integer> helper = new TimeWindowDataAggregationHelper<>(31, 24, 60);
+        TimeWindowDataAggregationHelper<Integer> helper = new TimeWindowDataAggregationHelper<>(
+                TimeWindowDataAggregationHelper.Config.builder().dayAggregationWindow(31).hourAggregationWindow(24).minuteAggregationWindow(60).build()
+        );
 
         // Process aggregation updates
         IAggregationUpdater<Integer> updater = new IAggregationUpdater<Integer>() {
