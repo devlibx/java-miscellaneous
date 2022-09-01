@@ -30,6 +30,7 @@ public class TimeWindowDataAggregationHelper<T> {
     }
 
     public void processDay(TimeWindowDataAggregation aggregation, DateTime currentTime, T event, DateTime eventTime, IAggregationUpdater<T> updater) {
+        if (daysCount <= 0) return;
 
         // Find what are the expired keys in the input aggregation
         List<String> keysToRemove = getDayKeys(currentTime);
@@ -45,6 +46,7 @@ public class TimeWindowDataAggregationHelper<T> {
     }
 
     public void processHours(TimeWindowDataAggregation aggregation, DateTime currentTime, T event, DateTime eventTime, IAggregationUpdater<T> updater) {
+        if (hoursCount <= 0) return;
 
         // Find what are the expired keys in the input aggregation
         List<String> keysToRemove = getHoursKeys(currentTime);
@@ -60,6 +62,7 @@ public class TimeWindowDataAggregationHelper<T> {
     }
 
     public void processMinutes(TimeWindowDataAggregation aggregation, DateTime currentTime, T event, DateTime eventTime, IAggregationUpdater<T> updater) {
+        if (minutesCount <= 0) return;
 
         // Find what are the expired keys in the input aggregation
         List<String> keysToRemove = getMinuetKeys(currentTime);
