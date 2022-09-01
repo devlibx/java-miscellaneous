@@ -18,7 +18,9 @@ public class Demo {
 
     public static void main(String[] args) {
         TimeWindowDataAggregation aggregation = new TimeWindowDataAggregation();
-        TimeWindowDataAggregationHelper<InputObject> helper = new TimeWindowDataAggregationHelper<>(31, 24, 60);
+        TimeWindowDataAggregationHelper<InputObject> helper = new TimeWindowDataAggregationHelper<>(
+                TimeWindowDataAggregationHelper.Config.builder().dayHourAggregationWindow(31).hourAggregationWindow(24).minuteAggregationWindow(60).build()
+        );
 
         // Process aggregation updates
         IAggregationUpdater<InputObject> updater = (data, key, event) -> {
@@ -27,33 +29,27 @@ public class Demo {
                     : data.getLong(key);
             data.put(key, existingValue + 1);
         };
-        
-        Config c = Config.enabD()
 
         // Process event 1
         DateTime now = DateTime.now();
         InputObject inputObject = InputObject.builder().orderId("1").timestamp(now).build();
-        helper.processDay(aggregation, now, inputObject, inputObject.timestamp, updater);
-        helper.processHours(aggregation, now, inputObject, inputObject.timestamp, updater);
-        helper.processMinutes(aggregation, now, inputObject, inputObject.timestamp, updater);
+        helper.process(aggregation, now, inputObject, inputObject.timestamp, updater);
         System.out.println(JsonUtils.asJson(aggregation));
-        // >> OUTPUT = {"days":{"8-31":1}, "days_hour":{"8-31":{"1": 2, "2": 4}},, "hours":{"31-13":1},"minutes":{"13-49":1}}
+        // >> OUTPUT = {"updated_at":1662020452255,"days_hours":{"9-1":{"13":1}},"hours":{"1-13":1},"minutes":{"13-50":1}}
 
         // Process event 2
         now = DateTime.now();
         inputObject = InputObject.builder().orderId("1").timestamp(now).build();
-        helper.processDay(aggregation, now, inputObject, inputObject.timestamp, updater);
-        helper.processHours(aggregation, now, inputObject, inputObject.timestamp, updater);
-        helper.processMinutes(aggregation, now, inputObject, inputObject.timestamp, updater);
+        helper.process(aggregation, now, inputObject, inputObject.timestamp, updater);
         System.out.println(JsonUtils.asJson(aggregation));
-        // >> OUTPUT = {"days":{"8-31":2},"hours":{"31-13":2},"minutes":{"13-49":2}}
+        // >> OUTPUT = {"updated_at":1662020452476,"days_hours":{"9-1":{"13":2}},"hours":{"1-13":2},"minutes":{"13-50":2}}
 
         // Process event 3
         now = DateTime.now();
         inputObject = InputObject.builder().orderId("1").timestamp(now).build();
-        helper.processDayHourMinutes(aggregation, now, inputObject, inputObject.timestamp, updater);
+        helper.process(aggregation, now, inputObject, inputObject.timestamp, updater);
         System.out.println(JsonUtils.asJson(aggregation));
-        // >> OUTPUT = {"days":{"8-31":3},"hours":{"31-13":3},"minutes":{"13-49":3}}
+        // >> OUTPUT = {"updated_at":1662020452476,"days_hours":{"9-1":{"13":3}},"hours":{"1-13":3},"minutes":{"13-50":3}}
     }
 
     @Data
