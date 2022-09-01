@@ -37,7 +37,7 @@ public class TimeWindowDataAggregationHelper<T> {
         processMinutes(aggregation, currentTime, event, eventTime, updater);
     }
 
-    public void processDayHour(TimeWindowDataAggregation aggregation, DateTime currentTime, T event, DateTime eventTime, IAggregationUpdater<T> updater) {
+    void processDayHour(TimeWindowDataAggregation aggregation, DateTime currentTime, T event, DateTime eventTime, IAggregationUpdater<T> updater) {
         if (daysHoursCount <= 0) return;
 
         // Find what are the expired keys in the input aggregation
@@ -59,7 +59,7 @@ public class TimeWindowDataAggregationHelper<T> {
         aggregation.setUpdatedAt(DateTime.now().getMillis());
     }
 
-    public void processDay(TimeWindowDataAggregation aggregation, DateTime currentTime, T event, DateTime eventTime, IAggregationUpdater<T> updater) {
+    void processDay(TimeWindowDataAggregation aggregation, DateTime currentTime, T event, DateTime eventTime, IAggregationUpdater<T> updater) {
         if (daysCount <= 0) return;
 
         // Find what are the expired keys in the input aggregation
@@ -77,7 +77,7 @@ public class TimeWindowDataAggregationHelper<T> {
         aggregation.setUpdatedAt(DateTime.now().getMillis());
     }
 
-    public void processHours(TimeWindowDataAggregation aggregation, DateTime currentTime, T event, DateTime eventTime, IAggregationUpdater<T> updater) {
+    void processHours(TimeWindowDataAggregation aggregation, DateTime currentTime, T event, DateTime eventTime, IAggregationUpdater<T> updater) {
         if (hoursCount <= 0) return;
 
         // Find what are the expired keys in the input aggregation
@@ -95,7 +95,7 @@ public class TimeWindowDataAggregationHelper<T> {
         aggregation.setUpdatedAt(DateTime.now().getMillis());
     }
 
-    public void processMinutes(TimeWindowDataAggregation aggregation, DateTime currentTime, T event, DateTime eventTime, IAggregationUpdater<T> updater) {
+    void processMinutes(TimeWindowDataAggregation aggregation, DateTime currentTime, T event, DateTime eventTime, IAggregationUpdater<T> updater) {
         if (minutesCount <= 0) return;
 
         // Find what are the expired keys in the input aggregation
@@ -157,9 +157,21 @@ public class TimeWindowDataAggregationHelper<T> {
         return keys;
     }
 
+    /**
+     * @param <T> input object to process
+     */
     interface IAggregationUpdater<T> {
+
+        /**
+         * This method will be called with the data map, the key to update, and input event. Client can update the
+         * "data" (with key) with any business logic
+         */
         void update(StringObjectMap data, String key, T event);
 
+        /**
+         * Default behaviour - any keys out of the range will be deleted - client can override and can do some custom
+         * logic.
+         */
         default void expired(StringObjectMap data, String key, T event) {
             data.remove(key);
         }
