@@ -14,19 +14,46 @@ import java.util.Set;
 
 public class TimeWindowDataAggregationHelper<T> {
     private final int daysCount;
+    private final int daysHoursCount;
     private final int hoursCount;
     private final int minutesCount;
 
     public TimeWindowDataAggregationHelper(Config config) {
-        this.daysCount = config.dayAggregationWindow;
         this.hoursCount = config.hourAggregationWindow;
         this.minutesCount = config.minuteAggregationWindow;
+        if (config.getDayHourAggregationWindow() > 0) {
+            this.daysCount = 0;
+            this.daysHoursCount = config.dayAggregationWindow;
+        } else {
+            this.daysCount = config.dayAggregationWindow;
+            this.daysHoursCount = 0;
+        }
     }
 
     public void processDayHourMinutes(TimeWindowDataAggregation aggregation, DateTime currentTime, T event, DateTime eventTime, IAggregationUpdater<T> updater) {
         processDay(aggregation, currentTime, event, eventTime, updater);
         processHours(aggregation, currentTime, event, eventTime, updater);
         processMinutes(aggregation, currentTime, event, eventTime, updater);
+    }
+
+    public void processDayHour(TimeWindowDataAggregation aggregation, DateTime currentTime, T event, DateTime eventTime, IAggregationUpdater<T> updater) {
+        if (daysHoursCount <= 0) return;
+
+        // Find what are the expired keys in the input aggregation
+        List<String> keysToRemove = getDayHourKeys(currentTime);
+        Set<String> keysInInput = aggregation.getDaysHours().keySet();
+        keysInInput.forEach(keysToRemove::remove);
+        keysToRemove.forEach(keyToRemove -> updater.expired(aggregation.getDaysHours(), keyToRemove, event));
+
+        // Call updater to add data for give day
+        String key = eventTime.getMonthOfYear() + "-" + eventTime.getDayOfMonth();
+        if (getDayHourKeys(currentTime).contains(key)) {
+            if (!aggregation.getDaysHours().containsKey(key)) {
+                aggregation.getDaysHours().put(key, new StringObjectMap());
+            }
+            StringObjectMap dayData = aggregation.getDaysHours().getStringObjectMap(key);
+            updater.update(dayData, eventTime.getHourOfDay() + "", event);
+        }
     }
 
     public void processDay(TimeWindowDataAggregation aggregation, DateTime currentTime, T event, DateTime eventTime, IAggregationUpdater<T> updater) {
@@ -79,6 +106,17 @@ public class TimeWindowDataAggregationHelper<T> {
 
     List<String> getDayKeys(DateTime time) {
         DateTime start = time.minusDays(daysCount);
+        List<String> keys = new ArrayList<>();
+        while (start.isBefore(time)) {
+            start = start.plusDays(1);
+            String dayKey = start.getMonthOfYear() + "-" + start.getDayOfMonth();
+            keys.add(dayKey);
+        }
+        return keys;
+    }
+
+    List<String> getDayHourKeys(DateTime time) {
+        DateTime start = time.minusDays(daysHoursCount);
         List<String> keys = new ArrayList<>();
         while (start.isBefore(time)) {
             start = start.plusDays(1);

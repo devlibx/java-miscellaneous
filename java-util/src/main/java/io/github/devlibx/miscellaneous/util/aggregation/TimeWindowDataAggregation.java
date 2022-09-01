@@ -8,6 +8,7 @@ import lombok.Data;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class TimeWindowDataAggregation {
     private final StringObjectMap days = new StringObjectMap();
+    private final StringObjectMap daysHours = new StringObjectMap();
     private final StringObjectMap hours = new StringObjectMap();
     private final StringObjectMap minutes = new StringObjectMap();
 }
