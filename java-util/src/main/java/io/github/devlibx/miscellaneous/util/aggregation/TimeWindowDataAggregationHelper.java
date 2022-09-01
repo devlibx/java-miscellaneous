@@ -23,14 +23,15 @@ public class TimeWindowDataAggregationHelper<T> {
         this.minutesCount = config.minuteAggregationWindow;
         if (config.getDayHourAggregationWindow() > 0) {
             this.daysCount = 0;
-            this.daysHoursCount = config.dayAggregationWindow;
+            this.daysHoursCount = config.dayHourAggregationWindow;
         } else {
             this.daysCount = config.dayAggregationWindow;
             this.daysHoursCount = 0;
         }
     }
 
-    public void processDayHourMinutes(TimeWindowDataAggregation aggregation, DateTime currentTime, T event, DateTime eventTime, IAggregationUpdater<T> updater) {
+    public void process(TimeWindowDataAggregation aggregation, DateTime currentTime, T event, DateTime eventTime, IAggregationUpdater<T> updater) {
+        processDayHour(aggregation, currentTime, event, eventTime, updater);
         processDay(aggregation, currentTime, event, eventTime, updater);
         processHours(aggregation, currentTime, event, eventTime, updater);
         processMinutes(aggregation, currentTime, event, eventTime, updater);
@@ -54,6 +55,8 @@ public class TimeWindowDataAggregationHelper<T> {
             StringObjectMap dayData = aggregation.getDaysHours().getStringObjectMap(key);
             updater.update(dayData, eventTime.getHourOfDay() + "", event);
         }
+
+        aggregation.setUpdatedAt(DateTime.now().getMillis());
     }
 
     public void processDay(TimeWindowDataAggregation aggregation, DateTime currentTime, T event, DateTime eventTime, IAggregationUpdater<T> updater) {
@@ -70,6 +73,8 @@ public class TimeWindowDataAggregationHelper<T> {
         if (getDayKeys(currentTime).contains(key)) {
             updater.update(aggregation.getDays(), key, event);
         }
+
+        aggregation.setUpdatedAt(DateTime.now().getMillis());
     }
 
     public void processHours(TimeWindowDataAggregation aggregation, DateTime currentTime, T event, DateTime eventTime, IAggregationUpdater<T> updater) {
@@ -86,6 +91,8 @@ public class TimeWindowDataAggregationHelper<T> {
         if (getHoursKeys(currentTime).contains(key)) {
             updater.update(aggregation.getHours(), key, event);
         }
+
+        aggregation.setUpdatedAt(DateTime.now().getMillis());
     }
 
     public void processMinutes(TimeWindowDataAggregation aggregation, DateTime currentTime, T event, DateTime eventTime, IAggregationUpdater<T> updater) {
@@ -102,6 +109,8 @@ public class TimeWindowDataAggregationHelper<T> {
         if (getMinuetKeys(currentTime).contains(key)) {
             updater.update(aggregation.getMinutes(), key, event);
         }
+
+        aggregation.setUpdatedAt(DateTime.now().getMillis());
     }
 
     List<String> getDayKeys(DateTime time) {

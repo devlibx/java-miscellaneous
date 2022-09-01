@@ -2,6 +2,8 @@ package io.github.devlibx.miscellaneous.util.aggregation;
 
 
 import io.gitbub.devlibx.easy.helper.calendar.CalendarUtils;
+import io.gitbub.devlibx.easy.helper.json.JsonUtil;
+import io.gitbub.devlibx.easy.helper.json.JsonUtils;
 import io.github.devlibx.miscellaneous.util.aggregation.TimeWindowDataAggregationHelper.Config;
 import io.github.devlibx.miscellaneous.util.aggregation.TimeWindowDataAggregationHelper.IAggregationUpdater;
 import org.joda.time.DateTime;
@@ -171,6 +173,8 @@ public class TimeWindowDataAggregationHelperTest {
         Assertions.assertEquals(2, aggregation.getDaysHours().size());
         Assertions.assertEquals("processed-a", aggregation.getDaysHours().getStringObjectMap("7-9").get("17"));
         Assertions.assertEquals("processed-c", aggregation.getDaysHours().getStringObjectMap("8-8").get("17"));
+
+        System.out.println(JsonUtils.asJson(aggregation));
     }
 
 }
