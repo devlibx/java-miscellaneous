@@ -165,6 +165,25 @@ public class TimeWindowDataAggregationHelper<T> {
         }
     }
 
+    /**
+     * Configure aggregation helper class -
+     *
+     * <pre>
+     * hourAggregationWindow - if > 0 then last "hourAggregationWindow" hours will be aggregated
+     *              e.g. {"updated_at":1662020452476, "hours":{"1-13":3}}
+     *
+     * minuteAggregationWindow - if > 0 then last "minuteAggregationWindow" minutes will be aggregated
+     *              e.g. {"updated_at":1662020452476, "minutes":{"13-50":3}}
+     *
+     * dayHourAggregationWindow - if > 0 then last "dayHourAggregationWindow" days will be aggregated
+     *              e.g. {"updated_at":1662020452476, "days_hours":{"9-1":{"13":3}}}
+     *
+     * dayAggregationWindow - if > 0 then last "dayAggregationWindow" days will be aggregated
+     *              e.g. {"updated_at":1662020452476, "days":{"9-1":2}}
+     *
+     *              NOTE - if "dayHourAggregationWindow" is > 0 then "dayAggregationWindow" is ignored
+     * </pre>
+     */
     @Data
     @NoArgsConstructor
     @AllArgsConstructor
