@@ -9,7 +9,7 @@
     <modules>
         <module>java-util</module>
         <module>avro</module>
-        <!--<module>flink</module>-->
+        <module>flink</module>
     </modules>
     <name>parent</name>
     <url>https://github.com/devlibx/java-miscellaneous</url>
