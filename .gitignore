@@ -9,3 +9,5 @@ java-miscellaneous.iws
 do_not_commit.sh
 avro/target
 java-util/target
+flink/target
+flink/dependency-reduced-pom.xml

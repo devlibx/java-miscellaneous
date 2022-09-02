@@ -9,6 +9,7 @@
     <modules>
         <module>java-util</module>
         <module>avro</module>
+        <module>flink</module>
     </modules>
     <name>parent</name>
     <url>https://github.com/devlibx/java-miscellaneous</url>
@@ -27,6 +28,10 @@
         <easy.version>0.0.83</easy.version>
         <avro.version>1.7.7</avro.version>
         <junit-jupiter>5.7.0</junit-jupiter>
+        <scala.binary.version>2.11</scala.binary.version>
+        <flink.version>1.14.2</flink.version>
+        <easy.flink.version>0.0.30</easy.flink.version>
+        <main.class>NA</main.class>
     </properties>
 
     <dependencyManagement>
@@ -36,11 +41,41 @@
                 <artifactId>helper</artifactId>
                 <version>${easy.version}</version>
             </dependency>
+            <dependency>
+                <groupId>io.github.devlibx.easy</groupId>
+                <artifactId>rule-engine-drools</artifactId>
+                <version>${easy.version}</version>
+            </dependency>
 
             <dependency>
                 <groupId>org.apache.avro</groupId>
                 <artifactId>avro</artifactId>
                 <version>${avro.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>io.github.devlibx.flink</groupId>
+                <artifactId>easy-flink</artifactId>
+                <version>${easy.flink.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>com.amazonaws</groupId>
+                        <artifactId>aws-java-sdk-s3</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>com.fasterxml.jackson.core</groupId>
+                        <artifactId>jackson-core</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>com.fasterxml.jackson.core</groupId>
+                        <artifactId>jackson-databind</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.flink</groupId>
+                <artifactId>flink-connector-kafka_${scala.binary.version}</artifactId>
+                <version>${flink.version}</version>
             </dependency>
 
             <!-- Testing -->
@@ -151,8 +186,114 @@
     </build>
 
     <profiles>
+
+        <profile>
+
+            <id>idea</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+
+            <dependencies>
+                <dependency>
+                    <groupId>org.apache.flink</groupId>
+                    <artifactId>flink-streaming-java_${scala.binary.version}</artifactId>
+                    <version>${flink.version}</version>
+                </dependency>
+                <dependency>
+                    <groupId>org.apache.flink</groupId>
+                    <artifactId>flink-clients_${scala.binary.version}</artifactId>
+                    <version>${flink.version}</version>
+                </dependency>
+                <dependency>
+                    <groupId>org.apache.flink</groupId>
+                    <artifactId>flink-statebackend-rocksdb_2.12</artifactId>
+                    <version>${flink.version}</version>
+                </dependency>
+                <dependency>
+                    <groupId>org.apache.flink</groupId>
+                    <artifactId>flink-s3-fs-hadoop</artifactId>
+                    <version>${flink.version}</version>
+                </dependency>
+            </dependencies>
+
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-shade-plugin</artifactId>
+                        <version>3.0.0</version>
+                        <executions>
+                            <execution>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>shade</goal>
+                                </goals>
+                                <configuration>
+                                    <artifactSet>
+                                        <excludes>
+                                            <!--<exclude>org.apache.flink:flink-shaded-force-shading</exclude>
+                                            <exclude>com.google.code.findbugs:jsr305</exclude>
+                                            <exclude>org.slf4j:*</exclude>
+                                            <exclude>org.apache.logging.log4j:*</exclude>-->
+                                        </excludes>
+                                    </artifactSet>
+                                    <filters>
+                                        <filter>
+                                            <artifact>*:*</artifact>
+                                            <excludes>
+                                                <exclude>META-INF/*.SF</exclude>
+                                                <exclude>META-INF/*.DSA</exclude>
+                                                <exclude>META-INF/*.RSA</exclude>
+                                            </excludes>
+                                        </filter>
+                                    </filters>
+                                    <transformers>
+                                        <transformer
+                                                implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                                            <mainClass>${main.class}</mainClass>
+                                        </transformer>
+                                    </transformers>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+
+        </profile>
+
         <profile>
             <id>release</id>
+
+            <dependencies>
+                <dependency>
+                    <groupId>org.apache.flink</groupId>
+                    <artifactId>flink-streaming-java_${scala.binary.version}</artifactId>
+                    <version>${flink.version}</version>
+                    <scope>provided</scope>
+                </dependency>
+                <dependency>
+                    <groupId>org.apache.flink</groupId>
+                    <artifactId>flink-clients_${scala.binary.version}</artifactId>
+                    <version>${flink.version}</version>
+                    <scope>provided</scope>
+                </dependency>
+                <dependency>
+                    <groupId>org.apache.flink</groupId>
+                    <artifactId>flink-statebackend-rocksdb_2.12</artifactId>
+                    <version>${flink.version}</version>
+                    <scope>provided</scope>
+                </dependency>
+                <dependency>
+                    <groupId>org.apache.flink</groupId>
+                    <artifactId>flink-s3-fs-hadoop</artifactId>
+                    <version>${flink.version}</version>
+                    <scope>provided</scope>
+                </dependency>
+            </dependencies>
+
+
             <build>
                 <plugins>
                     <plugin>
