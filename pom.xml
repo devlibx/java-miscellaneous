@@ -25,7 +25,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <lombok.version>1.18.16</lombok.version>
-        <easy.version>0.0.83</easy.version>
+        <easy.version>0.0.86</easy.version>
         <avro.version>1.7.7</avro.version>
         <junit-jupiter>5.7.0</junit-jupiter>
         <scala.binary.version>2.11</scala.binary.version>
