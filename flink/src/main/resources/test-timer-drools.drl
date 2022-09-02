@@ -20,7 +20,7 @@ rule "Filter Input Stream"
       }
 end
 
-rule "Order Initiated"
+rule "Order Initiated "
   dialect "java"
   agenda-group "initial-event-trigger"
   when
