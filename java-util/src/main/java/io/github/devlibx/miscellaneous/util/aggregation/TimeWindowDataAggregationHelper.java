@@ -160,7 +160,7 @@ public class TimeWindowDataAggregationHelper<T> {
     /**
      * @param <T> input object to process
      */
-    interface IAggregationUpdater<T> {
+    public interface IAggregationUpdater<T> {
 
         /**
          * This method will be called with the data map, the key to update, and input event. Client can update the
