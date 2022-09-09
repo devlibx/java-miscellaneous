@@ -25,12 +25,12 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <lombok.version>1.18.16</lombok.version>
-        <easy.version>0.0.86</easy.version>
+        <easy.version>0.0.87</easy.version>
         <avro.version>1.7.7</avro.version>
         <junit-jupiter>5.8.1</junit-jupiter>
         <scala.binary.version>2.11</scala.binary.version>
         <flink.version>1.14.2</flink.version>
-        <easy.flink.version>0.0.30</easy.flink.version>
+        <easy.flink.version>0.0.40</easy.flink.version>
         <main.class>NA</main.class>
     </properties>
 
