@@ -9,6 +9,7 @@ import io.github.devlibx.miscellaneous.flink.store.GenericState;
 import io.github.devlibx.miscellaneous.flink.store.IGenericStateStore;
 import io.github.devlibx.miscellaneous.flink.store.Key;
 import io.github.devlibx.miscellaneous.flink.store.ProxyBackedGenericStateStore;
+import org.joda.time.DateTime;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledOnOs;
@@ -21,7 +22,7 @@ public class DynamoDBBackedStateStoreTest {
     @Test
     @EnabledOnOs(OS.MAC)
     public void testDdbStore() {
-        String id = UUID.randomUUID().toString();
+        String id = "automation-" + DateTime.now() + "-" + UUID.randomUUID();
         StateStoreConfig stateStoreConfig = new StateStoreConfig();
         stateStoreConfig.setType("dynamo");
         stateStoreConfig.setDdbConfig(DynamoDbConfig.builder().table("harish-table").region("ap-south-1").build());
@@ -43,6 +44,7 @@ public class DynamoDBBackedStateStoreTest {
         GenericState fromDb = dynamoDBBackedStateStore.get(Key.builder().key(id).subKey("*").build());
         Assertions.assertNotNull(fromDb);
         Assertions.assertEquals(StringObjectMap.of("name", "harish"), fromDb.getData());
+        System.out.println("--> ID in DDB = " + id);
     }
 
     @Test

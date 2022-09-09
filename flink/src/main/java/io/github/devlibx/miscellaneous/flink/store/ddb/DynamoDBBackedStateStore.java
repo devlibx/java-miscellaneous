@@ -48,11 +48,11 @@ public class DynamoDBBackedStateStore implements IGenericStateStore, Serializabl
             record.subId = key.getSubKey();
         }
         record.data = JsonUtils.asJson(state.getData());
-        record.setUpdatedAt(new Timestamp(System.currentTimeMillis()));
+        record.setUpdatedAt(DateTime.now().toString());
         if (state.getTtl() != null) {
-            record.setUpdatedAt(new Timestamp(state.getTtl().getMillis()));
+            record.setTtl(new Timestamp(state.getTtl().getMillis()));
         } else {
-            record.setUpdatedAt(new Timestamp(DateTime.now().plusDays(35).getMillis()));
+            record.setTtl(new Timestamp(DateTime.now().plusDays(35).getMillis()));
         }
 
         try {
@@ -125,9 +125,9 @@ public class DynamoDBBackedStateStore implements IGenericStateStore, Serializabl
         @DynamoDBAttribute(attributeName = "data")
         private String data;
 
-        @DynamoDBTypeConverted(converter = DynamoDbTimestampConverter.class)
+        // @DynamoDBTypeConverted(converter = DynamoDbTimestampConverter.class)
         @DynamoDBAttribute(attributeName = "updated_at")
-        private Timestamp updatedAt;
+        private String updatedAt;
 
         @DynamoDBTypeConverted(converter = DynamoDbTimestampConverter.class)
         @DynamoDBAttribute(attributeName = "ttl")
