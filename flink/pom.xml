@@ -16,7 +16,6 @@
     </properties>
 
     <dependencies>
-
         <dependency>
             <groupId>io.github.devlibx.easy</groupId>
             <artifactId>helper</artifactId>
