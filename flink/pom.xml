@@ -20,6 +20,14 @@
             <groupId>io.github.devlibx.easy</groupId>
             <artifactId>helper</artifactId>
         </dependency>
+
+        <dependency>
+            <groupId>com.github.javaparser</groupId>
+            <artifactId>javaparser-symbol-solver-core</artifactId>
+            <version>3.24.4</version>
+            <scope>provided</scope>
+        </dependency>
+
         <dependency>
             <groupId>io.github.devlibx.easy</groupId>
             <artifactId>rule-engine-drools</artifactId>
