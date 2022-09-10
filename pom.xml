@@ -14,7 +14,7 @@
     </modules>
     <name>parent</name>
     <url>https://github.com/devlibx/java-miscellaneous</url>
-    <description>A library which provides jave helpers</description>
+    <description>A library which provides java helpers</description>
 
     <scm>
         <connection>scm:git:https://github.com/devlibx/java-miscellaneous.git</connection>
