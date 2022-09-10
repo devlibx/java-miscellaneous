@@ -28,7 +28,7 @@
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
         <lombok.version>1.18.24</lombok.version>
-        <easy.version>0.0.87</easy.version>
+        <easy.version>0.0.89</easy.version>
         <avro.version>1.7.7</avro.version>
         <junit-jupiter>5.8.1</junit-jupiter>
         <scala.binary.version>2.11</scala.binary.version>
