@@ -15,7 +15,6 @@ import lombok.NoArgsConstructor;
 public class KeyPair {
     private String key;
     private String subKey;
-    private String fallbackSubKeyIfSubKeyIsMissing;
 
     @JsonIgnore
     public KeyPair(String key) {
@@ -26,13 +25,6 @@ public class KeyPair {
     public KeyPair(String key, String subKey) {
         this.key = key;
         this.subKey = subKey;
-    }
-
-    @JsonIgnore
-    public KeyPair(String key, String subKey, String fallbackSubKeyIfSubKeyIsMissing) {
-        this.key = key;
-        this.subKey = subKey;
-        this.fallbackSubKeyIfSubKeyIsMissing = fallbackSubKeyIfSubKeyIsMissing;
     }
 
     @JsonIgnore
@@ -47,11 +39,7 @@ public class KeyPair {
     @JsonIgnore
     public Key buildKey() {
         if (Strings.isNullOrEmpty(subKey)) {
-            if (Strings.isNullOrEmpty(fallbackSubKeyIfSubKeyIsMissing)) {
                 return Key.builder().key(key).build();
-            } else {
-                return Key.builder().key(key).subKey(fallbackSubKeyIfSubKeyIsMissing).build();
-            }
         } else {
             return Key.builder().key(key).subKey(subKey).build();
         }
