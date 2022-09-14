@@ -44,18 +44,27 @@ public class DroolFileGenerator {
         CompilationUnit cu = StaticJavaParser.parse(new File(inputJavaFile));
 
         StringBuilder commonPropString = new StringBuilder();
+        StringBuilder commonCodeForEachMethod = new StringBuilder();
+
         cu.accept(new VoidVisitorAdapter<Object>() {
             @Override
             public void visit(ClassOrInterfaceDeclaration n, Object arg) {
                 super.visit(n, arg);
                 n.getMembers().forEach(bodyDeclaration -> {
                     if (bodyDeclaration.getMetaModel() instanceof FieldDeclarationMetaModel) {
-                        FieldDeclarationMetaModel fm = (FieldDeclarationMetaModel) bodyDeclaration.getMetaModel();
                         if (!bodyDeclaration.asFieldDeclaration().isTransient()) {
                             String str = bodyDeclaration.toString();
                             str = str.replace("public", "");
                             str = str.replace("static", "");
                             commonPropString.append(str).append("\n");
+                        } else {
+                            bodyDeclaration.asFieldDeclaration().getVariables().forEach(variableDeclarator -> {
+                                if ("__commonCodeMarker__".equals(variableDeclarator.getName().asString())) {
+                                    if (bodyDeclaration.getComment().isPresent()) {
+                                        commonCodeForEachMethod.append(extractComments(bodyDeclaration.getComment().get()));
+                                    }
+                                }
+                            });
                         }
                     }
                 });
@@ -84,9 +93,15 @@ public class DroolFileGenerator {
 
                 String finalResult = "" +
                         ruleHeader;
+
                 if (!Strings.isNullOrEmpty(commonPropString.toString())) {
                     finalResult += commonPropString.toString();
                 }
+
+                if (!Strings.isNullOrEmpty(commonCodeForEachMethod.toString())) {
+                    finalResult += commonCodeForEachMethod.toString();
+                }
+
                 finalResult += ruleBody + "\n" +
                         "end\n\n\n";
                 bodyStatements.add(finalResult);

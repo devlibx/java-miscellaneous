@@ -12,6 +12,12 @@ import java.util.List;
 public class SampleJavaFileFile {
     public static final String primaryKeyPrefix = "user_case_1_pk#";
     public static final String secondaryKeyPrefix = "user_case_1_sk#";
+    public static final String primaryIdKey = "user_id";
+
+    /**
+     *  System.out.println(JsonUtils.asJson(event));
+     */
+    public transient String __commonCodeMarker__ = "";
 
     /**
      * <pre>
@@ -26,7 +32,6 @@ public class SampleJavaFileFile {
      * </pre>
      */
     public void onEventReceived(StringObjectMap event, ResultMap resultMap, Configuration configuration) {
-        final String primaryIdKey = "user_id";
         final List<String> validStatusList = Arrays.asList("COMPLETED", "INIT");
         final String debugKey = "debug-drools-print-result-filter-input-stream";
         final StringObjectMap miscellaneousProperties = configuration.getMiscellaneousProperties();
@@ -58,7 +63,6 @@ public class SampleJavaFileFile {
      * </pre>
      */
     public void onEventProcessing_FetchStateKeys(StringObjectMap event, ResultMap resultMap, Configuration configuration) {
-        final String primaryIdKey = "user_id";
         final String debugKey = "debug-drools-print-result-state-keys-func";
         final StringObjectMap miscellaneousProperties = configuration.getMiscellaneousProperties();
 
