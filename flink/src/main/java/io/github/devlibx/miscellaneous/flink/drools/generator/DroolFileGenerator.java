@@ -3,12 +3,15 @@ package io.github.devlibx.miscellaneous.flink.drools.generator;
 import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.Node;
+import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.comments.Comment;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
+import com.github.javaparser.metamodel.FieldDeclarationMetaModel;
 import com.github.javaparser.symbolsolver.JavaSymbolSolver;
 import com.github.javaparser.symbolsolver.resolution.typesolvers.CombinedTypeSolver;
 import com.github.javaparser.symbolsolver.resolution.typesolvers.ReflectionTypeSolver;
+import com.google.common.base.Strings;
 import org.apache.commons.io.FileUtils;
 
 import java.io.File;
@@ -40,10 +43,30 @@ public class DroolFileGenerator {
     public String generateOut() throws FileNotFoundException {
         CompilationUnit cu = StaticJavaParser.parse(new File(inputJavaFile));
 
+        StringBuilder commonPropString = new StringBuilder();
+        cu.accept(new VoidVisitorAdapter<Object>() {
+            @Override
+            public void visit(ClassOrInterfaceDeclaration n, Object arg) {
+                super.visit(n, arg);
+                n.getMembers().forEach(bodyDeclaration -> {
+                    if (bodyDeclaration.getMetaModel() instanceof FieldDeclarationMetaModel) {
+                        FieldDeclarationMetaModel fm = (FieldDeclarationMetaModel) bodyDeclaration.getMetaModel();
+                        if (!bodyDeclaration.asFieldDeclaration().isTransient()) {
+                            String str = bodyDeclaration.toString();
+                            str = str.replace("public", "");
+                            str = str.replace("static", "");
+                            commonPropString.append(str).append("\n");
+                        }
+                    }
+                });
+            }
+        }, null);
+
         List<String> importStatements = new ArrayList<>();
         cu.getImports().forEach(importDeclaration -> {
             importStatements.add(importDeclaration.toString());
         });
+
 
         List<String> bodyStatements = new ArrayList<>();
         cu.accept(new VoidVisitorAdapter<Object>() {
@@ -60,8 +83,11 @@ public class DroolFileGenerator {
                 String ruleBody = n.toString();
 
                 String finalResult = "" +
-                        ruleHeader + "\n" +
-                        ruleBody + "\n" +
+                        ruleHeader;
+                if (!Strings.isNullOrEmpty(commonPropString.toString())) {
+                    finalResult += commonPropString.toString();
+                }
+                finalResult += ruleBody + "\n" +
                         "end\n\n\n";
                 bodyStatements.add(finalResult);
             }

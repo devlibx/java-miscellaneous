@@ -10,6 +10,8 @@ import java.util.Arrays;
 import java.util.List;
 
 public class SampleJavaFileFile {
+    public static final String primaryKeyPrefix = "user_case_1_pk#";
+    public static final String secondaryKeyPrefix = "user_case_1_sk#";
 
     /**
      * <pre>
@@ -56,10 +58,6 @@ public class SampleJavaFileFile {
      * </pre>
      */
     public void onEventProcessing_FetchStateKeys(StringObjectMap event, ResultMap resultMap, Configuration configuration) {
-        // Constants - change this for your use case
-        final String primaryKeyPrefix = "user_case_1_pk#";
-        final String secondaryKeyPrefix = "user_case_1_sk#";
-
         final String primaryIdKey = "user_id";
         final String debugKey = "debug-drools-print-result-state-keys-func";
         final StringObjectMap miscellaneousProperties = configuration.getMiscellaneousProperties();
