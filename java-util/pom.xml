@@ -5,7 +5,7 @@
     <parent>
         <groupId>io.github.devlibx.miscellaneous</groupId>
         <artifactId>parent</artifactId>
-        <version>0.0.25</version>
+        <version>0.0.26-SNAPSHOT</version>
     </parent>
     <artifactId>java-util</artifactId>
     <name>java-util</name>
