@@ -14,6 +14,7 @@ import io.github.devlibx.easy.flink.utils.v2.config.Configuration;
 import io.github.devlibx.miscellaneous.flink.store.GenericState;
 import io.github.devlibx.miscellaneous.flink.store.IGenericStateStore;
 import io.github.devlibx.miscellaneous.flink.store.Key;
+import org.joda.time.DateTime;
 
 import java.io.Serializable;
 
@@ -74,6 +75,7 @@ public class AerospikeBackedStateStore implements IGenericStateStore, Serializab
 
                 WritePolicy writePolicy = new WritePolicy();
                 writePolicy.setTimeout(aerospikeConfig.getProperties().getInt("writePolicy.timeout", 1000));
+                writePolicy.expiration = (int) (state.getTtl().getMillis() - DateTime.now().getMillis()) / 1000;
                 aerospikeClient.put(writePolicy, asKey, binData, binUpdatedAt);
 
             } catch (Exception e) {
