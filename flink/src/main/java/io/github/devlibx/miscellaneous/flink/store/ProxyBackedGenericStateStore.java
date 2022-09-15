@@ -49,10 +49,18 @@ public class ProxyBackedGenericStateStore implements IGenericStateStore, Seriali
                     if (Objects.equals(dynamoDbConfig.getStoreGroup().getName(), aerospikeConfig.getStoreGroup().getName())) {
                         if (dynamoDbConfig.getStoreGroup().getPriority() == 0) {
                             genericStateStore = new DynamoDBBackedStateStore(dynamoDbConfig, configuration);
-                            secondaryGenericStateStore = new AerospikeBackedStateStore(aerospikeConfig, configuration);
+                            if (dynamoDbConfig.getStoreGroup().getPriority() >= 1) {
+                                secondaryGenericStateStore = new AerospikeBackedStateStore(aerospikeConfig, configuration);
+                            } else {
+                                secondaryGenericStateStore = new NoOpGenericStateStore();
+                            }
                         } else {
                             genericStateStore = new AerospikeBackedStateStore(aerospikeConfig, configuration);
-                            secondaryGenericStateStore = new DynamoDBBackedStateStore(dynamoDbConfig, configuration);
+                            if (dynamoDbConfig.getStoreGroup().getPriority() >= 1) {
+                                secondaryGenericStateStore = new DynamoDBBackedStateStore(dynamoDbConfig, configuration);
+                            } else {
+                                secondaryGenericStateStore = new NoOpGenericStateStore();
+                            }
                         }
                     }
                 }
