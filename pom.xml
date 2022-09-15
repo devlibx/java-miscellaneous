@@ -33,12 +33,20 @@
         <junit-jupiter>5.8.1</junit-jupiter>
         <scala.binary.version>2.11</scala.binary.version>
         <flink.version>1.14.2</flink.version>
-        <easy.flink.version>0.0.49</easy.flink.version>
+        <easy.flink.version>0.0.50-SNAPSHOT</easy.flink.version>
         <main.class>NA</main.class>
+        <aerospike.version>6.0.0</aerospike.version>
     </properties>
 
     <dependencyManagement>
         <dependencies>
+
+            <dependency>
+                <groupId>com.aerospike</groupId>
+                <artifactId>aerospike-client</artifactId>
+                <version>6.0.0</version>
+            </dependency>
+
             <dependency>
                 <groupId>io.github.devlibx.easy</groupId>
                 <artifactId>helper</artifactId>

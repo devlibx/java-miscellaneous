@@ -16,6 +16,12 @@
     </properties>
 
     <dependencies>
+
+        <dependency>
+            <groupId>com.aerospike</groupId>
+            <artifactId>aerospike-client</artifactId>
+        </dependency>
+
         <dependency>
             <groupId>io.github.devlibx.easy</groupId>
             <artifactId>helper</artifactId>

@@ -1,0 +1,19 @@
+state_store:
+  type: dynamo
+  enableMultiDb: true
+  dynamo:
+    store_group:
+      name: main_store
+      priority: 0
+    table: harish-table
+  aerospike:
+    store_group:
+      name: main_store
+      priority: 1
+    cluster_name: main
+    priority: 1
+    hosts:
+      - { host: localhost, port: 3000 }
+    properties:
+      write_timeout: 1000
+      read_timeout: 1000
