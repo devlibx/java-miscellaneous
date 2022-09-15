@@ -42,6 +42,12 @@ public class AerospikeBackedStateStore implements IGenericStateStore, Serializab
             if (!Strings.isNullOrEmpty(aerospikeConfig.getClusterName())) {
                 clientPolicy.clusterName = aerospikeConfig.getClusterName();
             }
+            if (!Strings.isNullOrEmpty(aerospikeConfig.getUser())) {
+                clientPolicy.user = aerospikeConfig.getUser();
+            }
+            if (!Strings.isNullOrEmpty(aerospikeConfig.getPassword())) {
+                clientPolicy.password = aerospikeConfig.getPassword();
+            }
             clientPolicy.timeout = aerospikeConfig.getProperties().getInt("timeout", 1000);
             clientPolicy.writePolicyDefault = new WritePolicy();
             clientPolicy.writePolicyDefault.socketTimeout = aerospikeConfig.getProperties().getInt("writePolicy.socketTimeout", 1000);

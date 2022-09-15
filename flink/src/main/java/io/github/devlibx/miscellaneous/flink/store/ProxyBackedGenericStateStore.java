@@ -20,7 +20,7 @@ public class ProxyBackedGenericStateStore implements IGenericStateStore, Seriali
 
     public ProxyBackedGenericStateStore(Configuration configuration) {
         this.configuration = configuration;
-        if (configuration != null && configuration.getStateStore() != null && !configuration.getStateStore().isEnableMultiDb()) {
+        if (configuration != null && configuration.getStateStore() != null && configuration.getStateStore().isEnableMultiDb()) {
             multiDbSetupEnabled = true;
         } else {
             multiDbSetupEnabled = false;
@@ -49,7 +49,7 @@ public class ProxyBackedGenericStateStore implements IGenericStateStore, Seriali
                     if (Objects.equals(dynamoDbConfig.getStoreGroup().getName(), aerospikeConfig.getStoreGroup().getName())) {
                         if (dynamoDbConfig.getStoreGroup().getPriority() == 0) {
                             genericStateStore = new DynamoDBBackedStateStore(dynamoDbConfig, configuration);
-                            if (dynamoDbConfig.getStoreGroup().getPriority() >= 1) {
+                            if (aerospikeConfig.getStoreGroup().getPriority() >= 1) {
                                 secondaryGenericStateStore = new AerospikeBackedStateStore(aerospikeConfig, configuration);
                             } else {
                                 secondaryGenericStateStore = new NoOpGenericStateStore();

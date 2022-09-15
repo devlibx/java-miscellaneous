@@ -10,10 +10,10 @@ state_store:
     store_group:
       name: main_store
       priority: 1
-    cluster_name: main
-    priority: 1
+    namespace: test
+    set: test_set
     hosts:
-      - { host: localhost, port: 3000 }
+      - { host: 192.168.0.126, port: 3000 }
     properties:
       write_timeout: 1000
       read_timeout: 1000
