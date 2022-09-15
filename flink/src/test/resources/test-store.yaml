@@ -15,5 +15,9 @@ state_store:
     hosts:
       - { host: 192.168.0.126, port: 3000 }
     properties:
-      write_timeout: 1000
-      read_timeout: 1000
+      writePolicy.socketTimeout: 1000
+      readPolicy.socketTimeout: 1000
+      writePolicy.timeout: 1000
+      readPolicy.timeout: 1000
+      throwExceptionOnWriteError: false
+      throwExceptionOnReadError: false
