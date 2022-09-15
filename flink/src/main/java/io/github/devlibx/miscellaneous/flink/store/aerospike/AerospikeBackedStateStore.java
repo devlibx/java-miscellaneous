@@ -75,7 +75,12 @@ public class AerospikeBackedStateStore implements IGenericStateStore, Serializab
 
                 WritePolicy writePolicy = new WritePolicy();
                 writePolicy.setTimeout(aerospikeConfig.getProperties().getInt("writePolicy.timeout", 1000));
-                writePolicy.expiration = (int) (state.getTtl().getMillis() - DateTime.now().getMillis()) / 1000;
+
+                DateTime now = DateTime.now();
+                if (state.getTtl() != null && state.getTtl().isAfter(now)) {
+                    writePolicy.expiration = (int) (state.getTtl().getMillis() - now.getMillis()) / 1000;
+                }
+
                 aerospikeClient.put(writePolicy, asKey, binData, binUpdatedAt);
 
             } catch (Exception e) {
