@@ -60,4 +60,25 @@ public class Demo {
     }
 }
 ```
+
 ---
+
+# Flink Module
+
+To run test cases you need to have following 2:
+
+1. DDB Access
+    1. Table named "harish-table" with "pk=id" and "sort-key=sub_key"
+    3. Edit the ```src/test/resources/test-store.yaml``` to change table name
+2. Aerospike
+    1. Again you can edit ```src/test/resources/test-store.yaml```
+    2. Or run docker
+
+```shell
+# Launch Aerospike - change dir "/Users/harishbohara/Downloads/aerospike_data" to your own
+docker run -d  --name aerospike -v /Users/harishbohara/Downloads/aerospike_data:/opt/aerospike/data -p 3000-3002:3000-3002 aerospike:ce-5.7.0.12
+
+# See data in your set after running tests (change the IP in -h arg)
+docker run -ti  --name aerospike-tools --rm aerospike/aerospike-tools aql -h 192.168.0.126 --no-config-file
+>> select * from test.test_set
+```
