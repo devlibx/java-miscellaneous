@@ -3,6 +3,7 @@ package io.github.devlibx.miscellaneous.flink.store;
 import io.github.devlibx.easy.flink.utils.v2.config.AerospikeConfig;
 import io.github.devlibx.easy.flink.utils.v2.config.Configuration;
 import io.github.devlibx.easy.flink.utils.v2.config.DynamoDbConfig;
+import io.github.devlibx.easy.flink.utils.v2.config.StateStoreConfig;
 import io.github.devlibx.miscellaneous.flink.store.aerospike.AerospikeBackedStateStore;
 import io.github.devlibx.miscellaneous.flink.store.ddb.DynamoDBBackedStateStore;
 import io.github.devlibx.miscellaneous.flink.store.ddb.InMemoryDynamoDBBackedStateStore;
@@ -19,7 +20,7 @@ public class ProxyBackedGenericStateStore implements IGenericStateStore, Seriali
 
     public ProxyBackedGenericStateStore(Configuration configuration) {
         this.configuration = configuration;
-        if (configuration.getStateStore() != null && !configuration.getStateStore().isEnableMultiDb()) {
+        if (configuration != null && configuration.getStateStore() != null && !configuration.getStateStore().isEnableMultiDb()) {
             multiDbSetupEnabled = true;
         } else {
             multiDbSetupEnabled = false;
@@ -29,28 +30,29 @@ public class ProxyBackedGenericStateStore implements IGenericStateStore, Seriali
     public void ensureProxySetupIsDone() {
         if (!multiDbSetupEnabled) {
             if (genericStateStore == null && configuration.getStateStore() != null) {
-                if (Objects.equals(configuration.getStateStore().getType(), "dynamo")) {
+                if (Objects.equals(configuration.getStateStore().getType(), StateStoreConfig.DYNAMO)) {
                     genericStateStore = new DynamoDBBackedStateStore(configuration.getStateStore().getDdbConfig(), configuration);
-                } else if (Objects.equals(configuration.getStateStore().getType(), "dynamo-in-memory")) {
+                } else if (Objects.equals(configuration.getStateStore().getType(), StateStoreConfig.IN_MEMORY_DYNAMO)) {
                     genericStateStore = new InMemoryDynamoDBBackedStateStore(configuration);
+                } else if (Objects.equals(configuration.getStateStore().getType(), StateStoreConfig.AEROSPIKE)) {
+                    genericStateStore = new AerospikeBackedStateStore(configuration.getStateStore().getAerospikeDbConfig(), configuration);
                 }
             }
             secondaryGenericStateStore = new NoOpGenericStateStore();
         } else {
-            if (genericStateStore == null && configuration.getStateStore() != null) {
-
-                DynamoDbConfig dynamoDbConfig = configuration.getStateStore().getDdbConfig();
-                AerospikeConfig aerospikeConfig = configuration.getStateStore().getAerospikeDbConfig();
+            StateStoreConfig stateStoreConfig = configuration.getStateStore();
+            if (genericStateStore == null && stateStoreConfig != null) {
+                DynamoDbConfig dynamoDbConfig = stateStoreConfig.getDdbConfig();
+                AerospikeConfig aerospikeConfig = stateStoreConfig.getAerospikeDbConfig();
 
                 if (dynamoDbConfig != null && dynamoDbConfig.isEnabled() && aerospikeConfig != null && aerospikeConfig.isEnabled()) {
                     if (Objects.equals(dynamoDbConfig.getStoreGroup().getName(), aerospikeConfig.getStoreGroup().getName())) {
                         if (dynamoDbConfig.getStoreGroup().getPriority() == 0) {
-                            genericStateStore = new DynamoDBBackedStateStore(configuration.getStateStore().getDdbConfig(), configuration);
-                            secondaryGenericStateStore = new AerospikeBackedStateStore(configuration.getStateStore().getAerospikeDbConfig(), configuration);
+                            genericStateStore = new DynamoDBBackedStateStore(dynamoDbConfig, configuration);
+                            secondaryGenericStateStore = new AerospikeBackedStateStore(aerospikeConfig, configuration);
                         } else {
-                            genericStateStore = new AerospikeBackedStateStore(configuration.getStateStore().getAerospikeDbConfig(), configuration);
-                            secondaryGenericStateStore = new DynamoDBBackedStateStore(configuration.getStateStore().getDdbConfig(), configuration);
-
+                            genericStateStore = new AerospikeBackedStateStore(aerospikeConfig, configuration);
+                            secondaryGenericStateStore = new DynamoDBBackedStateStore(dynamoDbConfig, configuration);
                         }
                     }
                 }
