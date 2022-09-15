@@ -42,6 +42,14 @@ public class DynamoDBBackedStateStore implements IGenericStateStore, Serializabl
     public void persist(Key key, GenericState state) {
         ensureSetupIsDone();
 
+        // See if this
+        if (ddbConfig != null && !ddbConfig.isEnabled()) {
+            return;
+        } else if (ddbConfig != null && ddbConfig.getProperties() != null
+                && ddbConfig.getProperties().containsKey("disable.write") && ddbConfig.getProperties().getBoolean("disable.write", false)) {
+            return;
+        }
+
         DdbGenericStateRecord record = new DdbGenericStateRecord();
         record.id = key.getKey();
         if (!Strings.isNullOrEmpty(key.getSubKey())) {
@@ -66,6 +74,14 @@ public class DynamoDBBackedStateStore implements IGenericStateStore, Serializabl
     @Override
     public GenericState get(Key key) {
         ensureSetupIsDone();
+
+        // See if this
+        if (ddbConfig != null && !ddbConfig.isEnabled()) {
+            return null;
+        } else if (ddbConfig != null && ddbConfig.getProperties() != null
+                && ddbConfig.getProperties().containsKey("disable.read") && ddbConfig.getProperties().getBoolean("disable.read", false)) {
+            return null;
+        }
 
         try {
             DdbGenericStateRecord result = dynamoDBMapper.load(DdbGenericStateRecord.class, key.getKey(), key.getSubKey());
