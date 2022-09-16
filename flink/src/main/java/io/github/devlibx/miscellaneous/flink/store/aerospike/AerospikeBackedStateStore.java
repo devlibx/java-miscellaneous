@@ -91,7 +91,7 @@ public class AerospikeBackedStateStore implements IGenericStateStore, Serializab
 
                 aerospikeClient.put(writePolicy, asKey, binData, binUpdatedAt);
                 if (aerospikeExtraProperties.getBoolean("debug-aerospike-enabled-write", false)) {
-                    log.info("write to AS: key={}, data={}", asKey, binData);
+                    log.info("write to AS: key={}, data={}, TTL={}", asKey, binData, writePolicy.expiration);
                 }
 
             } catch (Exception e) {

@@ -3,9 +3,12 @@ package io.github.devlibx.miscellaneous.flink.store;
 import io.gitbub.devlibx.easy.helper.json.JsonUtils;
 import io.gitbub.devlibx.easy.helper.map.StringObjectMap;
 import io.github.devlibx.miscellaneous.flink.common.KeyPair;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.flink.configuration.Configuration;
 import org.apache.flink.streaming.api.functions.sink.RichSinkFunction;
+import org.joda.time.DateTime;
 
+@Slf4j
 public class GenericTimeWindowAggregationStoreSink extends RichSinkFunction<StringObjectMap> {
     private final IGenericStateStore genericStateStore;
 
@@ -23,12 +26,22 @@ public class GenericTimeWindowAggregationStoreSink extends RichSinkFunction<Stri
     public void invoke(StringObjectMap value, Context context) throws Exception {
         super.invoke(value, context);
         KeyPair keyPair = value.get("key_pair", KeyPair.class);
-        genericStateStore.persist(
-                keyPair.buildKey(),
-                GenericState.builder().data(
-                        JsonUtils.convertAsStringObjectMap(JsonUtils.asJson(value.get("aggregation")))
-                ).build()
-        );
+
+        // Add the aggregation data
+        GenericState.GenericStateBuilder state = GenericState.builder()
+                .data(JsonUtils.convertAsStringObjectMap(JsonUtils.asJson(value.get("aggregation"))));
+
+        // Set the TTL value if provided
+        if (value.containsKey("ttl")) {
+            if (value.get("ttl") instanceof Number) {
+                state.ttl(value.getDateTimeFromMiles("ttl"));
+            } else if (value.get("ttl") instanceof DateTime) {
+                state.ttl(value.get("ttl", DateTime.class));
+            }
+        }
+
+        // Send to store to persist
+        genericStateStore.persist(keyPair.buildKey(), state.build());
     }
 
     @Override
