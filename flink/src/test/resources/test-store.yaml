@@ -15,6 +15,7 @@ state_store:
     hosts:
       - { host: 192.168.0.126, port: 3000 }
     properties:
+      enable-send-key: true
       writePolicy.socketTimeout: 1000
       readPolicy.socketTimeout: 1000
       writePolicy.timeout: 1000

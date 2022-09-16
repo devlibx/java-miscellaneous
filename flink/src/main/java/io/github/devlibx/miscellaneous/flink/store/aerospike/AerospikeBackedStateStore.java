@@ -79,6 +79,9 @@ public class AerospikeBackedStateStore implements IGenericStateStore, Serializab
                 Bin binUpdatedAt = new Bin("updated_at", System.currentTimeMillis());
 
                 WritePolicy writePolicy = new WritePolicy();
+                if (aerospikeExtraProperties.getBoolean("enable-send-key", false)) {
+                    writePolicy.sendKey = true;
+                }
                 writePolicy.setTimeout(aerospikeConfig.getProperties().getInt("writePolicy.timeout", 1000));
 
                 DateTime now = DateTime.now();
