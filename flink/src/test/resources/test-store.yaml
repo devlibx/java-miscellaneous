@@ -21,3 +21,5 @@ state_store:
       readPolicy.timeout: 1000
       throwExceptionOnWriteError: false
       throwExceptionOnReadError: false
+      debug-aerospike-enabled-write: true
+      debug-aerospike-enabled-read: true
