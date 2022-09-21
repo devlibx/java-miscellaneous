@@ -28,18 +28,27 @@
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
         <lombok.version>1.18.24</lombok.version>
-        <easy.version>0.0.90</easy.version>
+        <easy.version>0.0.92</easy.version>
         <avro.version>1.7.7</avro.version>
         <junit-jupiter>5.8.1</junit-jupiter>
         <scala.binary.version>2.11</scala.binary.version>
         <flink.version>1.14.2</flink.version>
-        <easy.flink.version>0.0.53</easy.flink.version>
+        <easy.flink.version>0.0.55</easy.flink.version>
         <aerospike.version>5.0.0</aerospike.version>
         <main.class>NA</main.class>
     </properties>
 
     <dependencyManagement>
         <dependencies>
+
+            <!-- Take all dependency from "easy" master pom file -->
+            <dependency>
+                <groupId>io.github.devlibx.easy</groupId>
+                <artifactId>easy</artifactId>
+                <type>pom</type>
+                <scope>import</scope>
+                <version>${easy.version}</version>
+            </dependency>
 
             <dependency>
                 <groupId>com.aerospike</groupId>
