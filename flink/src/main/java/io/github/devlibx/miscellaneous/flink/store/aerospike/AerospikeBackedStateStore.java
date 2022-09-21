@@ -95,7 +95,7 @@ public class AerospikeBackedStateStore implements IGenericStateStore, Serializab
                 }
 
             } catch (Exception e) {
-                log.info("failed to write to AS: key={}, data={}", finalKey, state);
+                log.info("failed to write to AS: key={}, data={}, error={}", finalKey, state, e.getMessage());
                 if (throwExceptionOnWriteError) {
                     throw new RuntimeException(e);
                 }
@@ -123,7 +123,7 @@ public class AerospikeBackedStateStore implements IGenericStateStore, Serializab
                 result.setData(JsonUtils.convertAsStringObjectMap(record.getString("data")));
                 return result;
             } catch (Exception e) {
-                log.info("failed to read from AS: key={}", finalKey);
+                log.info("failed to read from AS: key={}, error={}", finalKey, e.getMessage());
                 if (throwExceptionOnReadError) {
                     throw new RuntimeException(e);
                 }
