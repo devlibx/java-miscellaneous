@@ -71,6 +71,7 @@ public class AerospikeBackedStateStore implements IGenericStateStore, Serializab
     public void persist(Key key, GenericState state) {
         if (aerospikeClient != null) {
             String finalKey = "";
+            int ttlValue = 0;
             try {
                 finalKey = key.getKey() + "#" + key.getSubKey();
 
@@ -86,7 +87,10 @@ public class AerospikeBackedStateStore implements IGenericStateStore, Serializab
 
                 DateTime now = DateTime.now();
                 if (state.getTtl() != null && state.getTtl().isAfter(now)) {
-                    writePolicy.expiration = (int) (state.getTtl().getMillis() - now.getMillis()) / 1000;
+                    long requestedTll = state.getTtl().getMillis();
+                    long current = now.getMillis();
+                    ttlValue = (int) ((requestedTll - current) / 1000);
+                    writePolicy.expiration = ttlValue;
                 }
 
                 aerospikeClient.put(writePolicy, asKey, binData, binUpdatedAt);
@@ -95,7 +99,7 @@ public class AerospikeBackedStateStore implements IGenericStateStore, Serializab
                 }
 
             } catch (Exception e) {
-                log.info("failed to write to AS: key={}, data={}, error={}", finalKey, state, e.getMessage());
+                log.info("failed to write to AS: key={}, data={}, TTL={}, error={}", finalKey, state, ttlValue, e.getMessage());
                 if (throwExceptionOnWriteError) {
                     throw new RuntimeException(e);
                 }
