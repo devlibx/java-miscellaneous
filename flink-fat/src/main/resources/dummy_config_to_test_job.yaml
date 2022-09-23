@@ -1,0 +1,14 @@
+environment:
+  stateBackend: rocksdb
+  enableUnalignedCheckpoints: false
+
+sources:
+  mainInput:
+    broker: localhost:9092
+    topic: orders_in
+    group_id: 1234
+    name: main_input
+    unique_id: f075d144-3523-11ed-a261-0242ac120002
+
+miscellaneous_properties:
+  stopAfterSec: 100000
