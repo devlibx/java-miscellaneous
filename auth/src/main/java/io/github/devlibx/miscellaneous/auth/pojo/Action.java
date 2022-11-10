@@ -18,6 +18,5 @@ import java.util.List;
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class Action {
     private String action;
-    private String resource;
     private List<String> resources;
 }

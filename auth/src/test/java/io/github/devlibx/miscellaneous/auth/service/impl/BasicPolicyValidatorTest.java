@@ -44,14 +44,14 @@ public class BasicPolicyValidatorTest {
                                 .actions(Collections.singletonList(
                                         "db:Get"
                                 ))
-                                .resource(resource)
+                                .resources(Collections.singletonList(resource))
                                 .build()
                 ))
                 .build();
         policyValidator.validate(
                 Action.builder()
                         .action("db:Get")
-                        .resource(resource)
+                        .resources(Collections.singletonList(resource))
                         .build(),
                 Collections.singletonList(policy)
         );
@@ -68,7 +68,7 @@ public class BasicPolicyValidatorTest {
                                 .actions(Collections.singletonList(
                                         "db:Get"
                                 ))
-                                .resource(resource)
+                                .resources(Collections.singletonList(resource))
                                 .build()
                 ))
                 .build();
@@ -79,7 +79,7 @@ public class BasicPolicyValidatorTest {
                     policyValidator.validate(
                             Action.builder()
                                     .action("db:Get")
-                                    .resource(resourceWhichUserAsked)
+                                    .resources(Collections.singletonList(resourceWhichUserAsked))
                                     .build(),
                             Collections.singletonList(policy)
                     );
@@ -101,7 +101,7 @@ public class BasicPolicyValidatorTest {
                                         "db:Get"
                                 ))
                                 .notActions(Collections.singletonList("db:Get"))
-                                .resource(resource)
+                                .resources(Collections.singletonList(resource))
                                 .build()
                 ))
                 .build();
@@ -112,7 +112,7 @@ public class BasicPolicyValidatorTest {
                     policyValidator.validate(
                             Action.builder()
                                     .action("db:Get")
-                                    .resource(resource)
+                                    .resources(Collections.singletonList(resource))
                                     .build(),
                             Collections.singletonList(policy)
                     );
@@ -135,7 +135,7 @@ public class BasicPolicyValidatorTest {
                                         "db:Get"
                                 ))
                                 .notActions(Collections.singletonList("db:Get"))
-                                .resource(resource)
+                                .resources(Collections.singletonList(resource))
                                 .build()
                 ))
                 .build();
@@ -146,7 +146,7 @@ public class BasicPolicyValidatorTest {
                     policyValidator.validate(
                             Action.builder()
                                     .action("db:Get")
-                                    .resource(resource)
+                                    .resources(Collections.singletonList(resource))
                                     .build(),
                             Collections.singletonList(policy)
                     );

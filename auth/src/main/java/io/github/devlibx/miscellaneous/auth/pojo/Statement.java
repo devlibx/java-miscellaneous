@@ -27,6 +27,5 @@ public class Statement {
     @Builder.Default
     private List<String> notActions = new ArrayList<>();
 
-    private String resource;
     private List<String> resources;
 }

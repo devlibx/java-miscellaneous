@@ -16,25 +16,24 @@ public class ResourceMatcher implements IResourceMatcher {
         this.metadataStore = metadataStore;
     }
 
-    @Override
-    public boolean match(String requested, String available) {
+    private boolean internalMatch(String requested, String available) {
         verifyValidResourceType(requested);
         verifyValidResourceType(available);
         return Objects.equals(requested, available);
     }
 
     @Override
-    public boolean match(String requested, List<String> available) {
-        boolean matched = false;
+    public boolean match(List<String> requested, List<String> available) {
         if (available != null) {
             for (String r : available) {
-                if (match(requested, r)) {
-                    matched = true;
-                    break;
+                for (String r1 : requested) {
+                    if (internalMatch(r1, r)) {
+                        return true;
+                    }
                 }
             }
         }
-        return matched;
+        return false;
     }
 
     /**

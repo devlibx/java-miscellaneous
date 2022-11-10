@@ -32,8 +32,7 @@ public class BasicPolicyValidator implements IPolicyValidator {
                 if (Objects.equals(statement.getEffect(), Effect.Allow)) {
 
                     // Make sure the resource in a requested action matches this statement rule
-                    if (resourceMatcher.match(action.getResource(), statement.getResource())
-                            || resourceMatcher.match(action.getResource(), statement.getResources())
+                    if (resourceMatcher.match(action.getResources(), statement.getResources())
                     ) {
 
                         // Check if this action is allowed
