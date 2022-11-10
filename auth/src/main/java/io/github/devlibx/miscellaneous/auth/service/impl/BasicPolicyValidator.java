@@ -2,6 +2,7 @@ package io.github.devlibx.miscellaneous.auth.service.impl;
 
 import io.github.devlibx.miscellaneous.auth.exception.ActionNowAllowedOnResourceException;
 import io.github.devlibx.miscellaneous.auth.pojo.Action;
+import io.github.devlibx.miscellaneous.auth.pojo.Effect;
 import io.github.devlibx.miscellaneous.auth.pojo.Policy;
 import io.github.devlibx.miscellaneous.auth.pojo.Statement;
 import io.github.devlibx.miscellaneous.auth.service.IPolicyValidator;
@@ -27,22 +28,27 @@ public class BasicPolicyValidator implements IPolicyValidator {
         for (Policy policy : policies.stream().filter(policy -> Objects.equals("v1", policy.getVersion())).collect(Collectors.toList())) {
             for (Statement statement : policy.getStatements()) {
 
-                if (resourceMatcher.match(action.getResource(), statement.getResource())
-                        || resourceMatcher.match(action.getResource(), statement.getResources())
-                ) {
+                // Check for allow action first
+                if (Objects.equals(statement.getEffect(), Effect.Allow)) {
 
-                    // Check if this action is allowed
-                    for (String actionFromPolicy : statement.getActions()) {
-                        if (policyActionMatcher.match(action.getAction(), actionFromPolicy)) {
-                            allowed = true;
+                    // Make sure the resource in a requested action matches this statement rule
+                    if (resourceMatcher.match(action.getResource(), statement.getResource())
+                            || resourceMatcher.match(action.getResource(), statement.getResources())
+                    ) {
+
+                        // Check if this action is allowed
+                        for (String actionFromPolicy : statement.getActions()) {
+                            if (policyActionMatcher.match(action.getAction(), actionFromPolicy)) {
+                                allowed = true;
+                            }
                         }
-                    }
 
-                    // Check if this action is not allowed - if it was allowed by any action, but any non-action will
-                    // suppress it
-                    for (String actionFromPolicy : statement.getNotActions()) {
-                        if (policyActionMatcher.match(action.getAction(), actionFromPolicy)) {
-                            allowed = false;
+                        // Check if this action is not allowed - if it was allowed by any action, but any non-action will
+                        // suppress it
+                        for (String actionFromPolicy : statement.getNotActions()) {
+                            if (policyActionMatcher.match(action.getAction(), actionFromPolicy)) {
+                                allowed = false;
+                            }
                         }
                     }
                 }
