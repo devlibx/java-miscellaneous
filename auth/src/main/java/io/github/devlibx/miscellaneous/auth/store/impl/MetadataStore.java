@@ -14,4 +14,12 @@ public class MetadataStore implements IMetadataStore {
                 "node"
         );
     }
+
+    @Override
+    public List<String> getServiceTypes() {
+        return Arrays.asList(
+                "db",
+                "node"
+        );
+    }
 }
