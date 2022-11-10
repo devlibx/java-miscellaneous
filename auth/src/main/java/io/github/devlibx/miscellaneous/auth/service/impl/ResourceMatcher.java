@@ -8,6 +8,10 @@ import javax.inject.Inject;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * We take the same approach as AWS - this is he format of our resource strings.
+ * <code>arn:partition:service:region:account:resource</code>
+ */
 public class ResourceMatcher implements IResourceMatcher {
     private final IMetadataStore metadataStore;
 
