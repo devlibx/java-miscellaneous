@@ -13,14 +13,15 @@ import java.util.List;
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Builder
 @AllArgsConstructor
+@NoArgsConstructor
 public class Statement {
-    private Effect effect;
-    private List<String> actions;
-    private String resource;
 
-    public Statement() {
-        effect = Effect.Allow;
-        actions = new ArrayList<>();
-        resource = "*";
-    }
+    @Builder.Default
+    private Effect effect = Effect.Allow;
+
+    @Builder.Default
+    private List<String> actions = new ArrayList<>();
+
+    @Builder.Default
+    private String resource = "*";
 }

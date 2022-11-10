@@ -8,6 +8,8 @@ import io.github.devlibx.miscellaneous.auth.service.IPolicyValidator;
 
 import javax.inject.Inject;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 public class BasicPolicyValidator implements IPolicyValidator {
     private final ResourceMatcher resourceMatcher;
@@ -22,7 +24,7 @@ public class BasicPolicyValidator implements IPolicyValidator {
     @Override
     public void validate(Action action, List<Policy> policies) {
         boolean allowed = false;
-        for (Policy policy : policies) {
+        for (Policy policy : policies.stream().filter(policy -> Objects.equals("v1", policy.getVersion())).collect(Collectors.toList())) {
             for (Statement statement : policy.getStatements()) {
                 if (resourceMatcher.match(action.getResource(), statement.getResource())) {
                     for (String actionFromPolicy : statement.getActions()) {

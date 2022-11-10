@@ -3,6 +3,7 @@ package io.github.devlibx.miscellaneous.auth.service.impl;
 import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
+import io.gitbub.devlibx.easy.helper.json.JsonUtils;
 import io.github.devlibx.miscellaneous.auth.exception.ActionNowAllowedOnResourceException;
 import io.github.devlibx.miscellaneous.auth.module.AuthModule;
 import io.github.devlibx.miscellaneous.auth.pojo.Action;
@@ -61,6 +62,7 @@ public class BasicPolicyValidatorTest {
                                 .build()
                 ))
                 .build();
+        System.out.println(JsonUtils.asJson(policy));
         Assertions.assertThrowsExactly(
                 ActionNowAllowedOnResourceException.class,
                 () -> {

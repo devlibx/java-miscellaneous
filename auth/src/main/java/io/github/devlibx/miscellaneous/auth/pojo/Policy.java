@@ -13,12 +13,12 @@ import java.util.List;
 @Builder
 @JsonIgnoreProperties(ignoreUnknown = true)
 @AllArgsConstructor
+@NoArgsConstructor
 public class Policy {
-    private String version;
-    private List<Statement> statements;
+    @Builder.Default
+    private String version = "v1";
 
-    public Policy() {
-        version = "v1";
-        statements = new ArrayList<>();
-    }
+    @Builder.Default
+    private List<Statement> statements = new ArrayList<>();
+
 }
