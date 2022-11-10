@@ -5,6 +5,7 @@ import com.google.inject.Guice;
 import com.google.inject.Injector;
 import io.gitbub.devlibx.easy.helper.json.JsonUtils;
 import io.github.devlibx.miscellaneous.auth.exception.ActionNowAllowedOnResourceException;
+import io.github.devlibx.miscellaneous.auth.exception.InvalidResourceTypeException;
 import io.github.devlibx.miscellaneous.auth.module.AuthModule;
 import io.github.devlibx.miscellaneous.auth.pojo.Action;
 import io.github.devlibx.miscellaneous.auth.pojo.Policy;
@@ -107,6 +108,40 @@ public class BasicPolicyValidatorTest {
 
         Assertions.assertThrowsExactly(
                 ActionNowAllowedOnResourceException.class,
+                () -> {
+                    policyValidator.validate(
+                            Action.builder()
+                                    .action("db:Get")
+                                    .resource(resource)
+                                    .build(),
+                            Collections.singletonList(policy)
+                    );
+                }
+        );
+    }
+
+
+    /**
+     * Here a db:Get was allowed, but it was suppressed by a not-action
+     */
+    @Test
+    public void testAllowPolicy_InvalidResourceType() {
+        String resource = "arn:org:db_bad:*:*:user_table";
+
+        Policy policy = Policy.builder()
+                .statements(Collections.singletonList(
+                        Statement.builder()
+                                .actions(Collections.singletonList(
+                                        "db:Get"
+                                ))
+                                .notActions(Collections.singletonList("db:Get"))
+                                .resource(resource)
+                                .build()
+                ))
+                .build();
+
+        Assertions.assertThrowsExactly(
+                InvalidResourceTypeException.class,
                 () -> {
                     policyValidator.validate(
                             Action.builder()
