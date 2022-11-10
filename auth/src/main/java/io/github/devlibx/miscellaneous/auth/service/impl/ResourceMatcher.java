@@ -17,8 +17,8 @@ public class ResourceMatcher implements IResourceMatcher {
     }
 
     private boolean internalMatch(String requested, String available) {
-        verifyValidResourceType(requested);
-        verifyValidResourceType(available);
+        verifyValidServiceType(requested);
+        verifyValidServiceType(available);
         return Objects.equals(requested, available);
     }
 
@@ -39,7 +39,7 @@ public class ResourceMatcher implements IResourceMatcher {
     /**
      * Parse a valid valid resource - sample = arn:org:<This shoule be a valid value></This>:*:*:user_table"
      */
-    private void verifyValidResourceType(String value) {
+    private void verifyValidServiceType(String value) {
 
         // If it is "*" then no need to check
         if (Objects.equals(value, "*")) {
@@ -49,12 +49,12 @@ public class ResourceMatcher implements IResourceMatcher {
         // We need to split by ":" and look at 2nd token
         String[] tokens = value.split(":");
         if (tokens.length < 2) {
-            throw new RuntimeException("Invalid resource value: format should be <resource_type>:.... Provided=" + value);
+            throw new RuntimeException("Invalid service value: format should be <service_type>:.... Provided=" + value);
         }
 
         // Make sure the resource types is a valid type based on the metadata store
-        if (!metadataStore.getResourceTypes().contains(tokens[2])) {
-            throw new InvalidResourceTypeException("Invalid resource value: resource is not valid. valid resources=" + metadataStore.getResourceTypes() + "  Provided=" + value);
+        if (!metadataStore.getServiceTypes().contains(tokens[2])) {
+            throw new InvalidResourceTypeException("Invalid service value: resource is not valid. valid services=" + metadataStore.getServiceTypes() + "  Provided=" + value);
         }
     }
 }
