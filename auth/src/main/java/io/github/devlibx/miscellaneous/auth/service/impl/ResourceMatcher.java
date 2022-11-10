@@ -9,10 +9,7 @@ public class ResourceMatcher implements IResourceMatcher {
 
     @Override
     public boolean match(String requested, String available) {
-        if (Objects.equals(requested, available)) {
-            return true;
-        }
-        return false;
+        return Objects.equals(requested, available);
     }
 
     @Override

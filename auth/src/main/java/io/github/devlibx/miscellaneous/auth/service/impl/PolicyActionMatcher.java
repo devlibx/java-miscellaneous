@@ -7,9 +7,6 @@ import java.util.Objects;
 public class PolicyActionMatcher implements IPolicyActionMatcher {
     @Override
     public boolean match(String requested, String available) {
-        if (Objects.equals(requested, available)) {
-            return true;
-        }
-        return false;
+        return Objects.equals(requested, available);
     }
 }
