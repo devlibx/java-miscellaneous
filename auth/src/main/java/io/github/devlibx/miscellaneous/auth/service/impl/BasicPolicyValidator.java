@@ -26,15 +26,30 @@ public class BasicPolicyValidator implements IPolicyValidator {
         boolean allowed = false;
         for (Policy policy : policies.stream().filter(policy -> Objects.equals("v1", policy.getVersion())).collect(Collectors.toList())) {
             for (Statement statement : policy.getStatements()) {
-                if (resourceMatcher.match(action.getResource(), statement.getResource())) {
+
+                if (resourceMatcher.match(action.getResource(), statement.getResource())
+                        || resourceMatcher.match(action.getResource(), statement.getResources())
+                ) {
+
+                    // Check if this action is allowed
                     for (String actionFromPolicy : statement.getActions()) {
                         if (policyActionMatcher.match(action.getAction(), actionFromPolicy)) {
                             allowed = true;
                         }
                     }
+
+                    // Check if this action is not allowed - if it was allowed by any action, but any non-action will
+                    // suppress it
+                    for (String actionFromPolicy : statement.getNotActions()) {
+                        if (policyActionMatcher.match(action.getAction(), actionFromPolicy)) {
+                            allowed = false;
+                        }
+                    }
                 }
             }
         }
+
+        // Throw auth error if action and policy does not match
         if (!allowed) {
             throw new ActionNowAllowedOnResourceException(action);
         }

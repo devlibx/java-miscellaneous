@@ -23,5 +23,8 @@ public class Statement {
     private List<String> actions = new ArrayList<>();
 
     @Builder.Default
-    private String resource = "*";
+    private List<String> notActions = new ArrayList<>();
+
+    private String resource;
+    private List<String> resources;
 }

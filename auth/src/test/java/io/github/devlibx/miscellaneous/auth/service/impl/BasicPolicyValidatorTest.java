@@ -31,20 +31,26 @@ public class BasicPolicyValidatorTest {
 
     @Test
     public void testAllowPolicy_WhenActionIsAllowedOnResource() {
+        // Sample AWS resource
+        // "Resource": "arn:aws:sqs:us-east-2:account-ID-without-hyphens:queue1"
+
+        // arn:<org>:<resource type>:<region>:<account>:<resource name>
+        String resource = "arn:org:db:*:*:user_table";
+
         Policy policy = Policy.builder()
                 .statements(Collections.singletonList(
                         Statement.builder()
                                 .actions(Collections.singletonList(
                                         "db:Get"
                                 ))
-                                .resource("arn:harish:db::user_table")
+                                .resource(resource)
                                 .build()
                 ))
                 .build();
         policyValidator.validate(
                 Action.builder()
                         .action("db:Get")
-                        .resource("arn:harish:db::user_table")
+                        .resource(resource)
                         .build(),
                 Collections.singletonList(policy)
         );
@@ -52,13 +58,16 @@ public class BasicPolicyValidatorTest {
 
     @Test
     public void testAllowPolicy_WhenActionIsAllowedButResourceDoesNotMatch() {
+        String resource = "arn:org:db:*:*:user_table";
+        String resourceWhichUserAsked = "arn:org:db:*:*:user_table_dont_allow";
+
         Policy policy = Policy.builder()
                 .statements(Collections.singletonList(
                         Statement.builder()
                                 .actions(Collections.singletonList(
                                         "db:Get"
                                 ))
-                                .resource("arn:harish:db::user_table")
+                                .resource(resource)
                                 .build()
                 ))
                 .build();
@@ -69,11 +78,45 @@ public class BasicPolicyValidatorTest {
                     policyValidator.validate(
                             Action.builder()
                                     .action("db:Get")
-                                    .resource("arn:harish:db::user_table_bad_table")
+                                    .resource(resourceWhichUserAsked)
                                     .build(),
                             Collections.singletonList(policy)
                     );
                 }
         );
     }
+
+    /**
+     * Here a db:Get was allowed, but it was suppressed by a not-action
+     */
+    @Test
+    public void testAllowPolicy_WhenNonActionWillStopAllowedAction() {
+        String resource = "arn:org:db:*:*:user_table";
+
+        Policy policy = Policy.builder()
+                .statements(Collections.singletonList(
+                        Statement.builder()
+                                .actions(Collections.singletonList(
+                                        "db:Get"
+                                ))
+                                .notActions(Collections.singletonList("db:Get"))
+                                .resource(resource)
+                                .build()
+                ))
+                .build();
+
+        Assertions.assertThrowsExactly(
+                ActionNowAllowedOnResourceException.class,
+                () -> {
+                    policyValidator.validate(
+                            Action.builder()
+                                    .action("db:Get")
+                                    .resource(resource)
+                                    .build(),
+                            Collections.singletonList(policy)
+                    );
+                }
+        );
+    }
+
 }
