@@ -11,6 +11,7 @@
         <module>avro</module>
         <module>flink</module>
         <module>flink-fat</module>
+        <module>auth</module>
     </modules>
     <name>parent</name>
     <url>https://github.com/devlibx/java-miscellaneous</url>
