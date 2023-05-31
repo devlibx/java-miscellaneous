@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import org.joda.time.DateTime;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -42,9 +43,9 @@ public class TimeWindowDataAggregationHelper<T> {
 
         // Find what are the expired keys in the input aggregation
         List<String> keysToRemove = getDayHourKeys(currentTime);
-        Set<String> keysInInput = aggregation.getDaysHours().keySet();
-        keysInInput.forEach(keysToRemove::remove);
-        keysToRemove.forEach(keyToRemove -> updater.expired(aggregation.getDaysHours(), keyToRemove, event));
+        Set<String> keysInInput = new HashSet<>(aggregation.getDaysHours().keySet());
+        keysToRemove.forEach(keysInInput::remove);
+        keysInInput.forEach(keyToRemove -> updater.expired(aggregation.getDaysHours(), keyToRemove, event));
 
         // Call updater to add data for give day
         String key = eventTime.getMonthOfYear() + "-" + eventTime.getDayOfMonth();
@@ -64,9 +65,9 @@ public class TimeWindowDataAggregationHelper<T> {
 
         // Find what are the expired keys in the input aggregation
         List<String> keysToRemove = getDayKeys(currentTime);
-        Set<String> keysInInput = aggregation.getDays().keySet();
-        keysInInput.forEach(keysToRemove::remove);
-        keysToRemove.forEach(keyToRemove -> updater.expired(aggregation.getDays(), keyToRemove, event));
+        Set<String> keysInInput = new HashSet<>(aggregation.getDays().keySet());
+        keysToRemove.forEach(keysInInput::remove);
+        keysInInput.forEach(keyToRemove -> updater.expired(aggregation.getDays(), keyToRemove, event));
 
         // Call updater to add data for give day
         String key = eventTime.getMonthOfYear() + "-" + eventTime.getDayOfMonth();
@@ -82,9 +83,9 @@ public class TimeWindowDataAggregationHelper<T> {
 
         // Find what are the expired keys in the input aggregation
         List<String> keysToRemove = getHoursKeys(currentTime);
-        Set<String> keysInInput = aggregation.getHours().keySet();
-        keysInInput.forEach(keysToRemove::remove);
-        keysToRemove.forEach(keyToRemove -> updater.expired(aggregation.getHours(), keyToRemove, event));
+        Set<String> keysInInput = new HashSet<>(aggregation.getHours().keySet());
+        keysToRemove.forEach(keysInInput::remove);
+        keysInInput.forEach(keyToRemove -> updater.expired(aggregation.getHours(), keyToRemove, event));
 
         // Call updater to add data for give day
         String key = eventTime.getDayOfMonth() + "-" + eventTime.getHourOfDay();
@@ -100,9 +101,9 @@ public class TimeWindowDataAggregationHelper<T> {
 
         // Find what are the expired keys in the input aggregation
         List<String> keysToRemove = getMinuetKeys(currentTime);
-        Set<String> keysInInput = aggregation.getMinutes().keySet();
-        keysInInput.forEach(keysToRemove::remove);
-        keysToRemove.forEach(keyToRemove -> updater.expired(aggregation.getMinutes(), keyToRemove, event));
+        Set<String> keysInInput = new HashSet<>(aggregation.getMinutes().keySet());
+        keysToRemove.forEach(keysInInput::remove);
+        keysInInput.forEach(keyToRemove -> updater.expired(aggregation.getMinutes(), keyToRemove, event));
 
         // Call updater to add data for give day
         String key = eventTime.getHourOfDay() + "-" + eventTime.getMinuteOfHour();
