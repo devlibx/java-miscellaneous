@@ -70,6 +70,10 @@ public class TimeWindowDataAggregationHelperTest {
         Assertions.assertEquals(2, aggregation.getDays().size());
         Assertions.assertEquals("processed-a", aggregation.getDays().get("7-9"));
         Assertions.assertEquals("processed-c", aggregation.getDays().get("8-8"));
+
+        // Process data for today + 60 (No new keys are added to aggregation - time is not good)
+        helper.processDay(aggregation, timeToUse.plusDays(60), "c", timeToUse, updater);
+        Assertions.assertEquals(0, aggregation.getDays().size());
     }
 
 
@@ -105,6 +109,10 @@ public class TimeWindowDataAggregationHelperTest {
         Assertions.assertEquals(2, aggregation.getHours().size());
         Assertions.assertEquals("processed-a", aggregation.getHours().get("7-18"));
         Assertions.assertEquals("processed-c", aggregation.getHours().get("8-17"));
+
+        // Process data for today + 25 (No new keys are added to aggregation - time is not good)
+        helper.processHours(aggregation, timeToUseInHourTest.plusHours(25), "c", timeToUseInHourTest, updater);
+        Assertions.assertEquals(0, aggregation.getHours().size());
     }
 
     @Test
@@ -139,6 +147,10 @@ public class TimeWindowDataAggregationHelperTest {
         Assertions.assertEquals(2, aggregation.getMinutes().size());
         Assertions.assertEquals("processed-a", aggregation.getMinutes().get("16-27"));
         Assertions.assertEquals("processed-c", aggregation.getMinutes().get("17-26"));
+
+        // Process data for today + 61 (No new keys are added to aggregation - time is not good)
+        helper.processMinutes(aggregation, timeToUseInMinuteTest.plusMinutes(61), "c", timeToUseInMinuteTest, updater);
+        Assertions.assertEquals(0, aggregation.getMinutes().size());
     }
 
     @Test
