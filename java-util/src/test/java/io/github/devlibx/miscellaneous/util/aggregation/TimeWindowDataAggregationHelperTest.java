@@ -2,7 +2,6 @@ package io.github.devlibx.miscellaneous.util.aggregation;
 
 
 import io.gitbub.devlibx.easy.helper.calendar.CalendarUtils;
-import io.gitbub.devlibx.easy.helper.json.JsonUtil;
 import io.gitbub.devlibx.easy.helper.json.JsonUtils;
 import io.github.devlibx.miscellaneous.util.aggregation.TimeWindowDataAggregationHelper.Config;
 import io.github.devlibx.miscellaneous.util.aggregation.TimeWindowDataAggregationHelper.IAggregationUpdater;
@@ -20,7 +19,7 @@ public class TimeWindowDataAggregationHelperTest {
     @Test
     public void testGetKeys() {
         TimeWindowDataAggregationHelper<String> helper = new TimeWindowDataAggregationHelper<>(
-                Config.builder().dayAggregationWindow(31).hourAggregationWindow(24).minuteAggregationWindow(60).build()
+                Config.builder().dayAggregationWindow(31).hourAggregationWindow(24).minuteAggregationWindow(120).build()
         );
         List<String> days = helper.getDayKeys(timeToUse);
         Assertions.assertEquals(31, days.size());
@@ -32,10 +31,11 @@ public class TimeWindowDataAggregationHelperTest {
         Assertions.assertEquals("7-18", hours.get(0));
         Assertions.assertEquals("8-17", hours.get(23));
 
-        List<String> minutes = helper.getMinuetKeys(timeToUse);
-        Assertions.assertEquals(60, minutes.size());
-        Assertions.assertEquals("16-27", minutes.get(0));
-        Assertions.assertEquals("17-26", minutes.get(59));
+        List<String> minutes = helper.getMinuteKeys(timeToUse);
+        Assertions.assertEquals(120, minutes.size());
+        Assertions.assertEquals("15-27", minutes.get(0));
+        Assertions.assertEquals("16-26", minutes.get(59));
+        Assertions.assertEquals("17-26", minutes.get(119));
     }
 
     @Test
