@@ -53,7 +53,6 @@ public class TimeWindowDataAggregationHelperTest {
         Assertions.assertEquals(1, aggregation.getDays().size());
         Assertions.assertEquals("processed-a", aggregation.getDays().get("7-9"));
 
-
         // Process data for 31 days back (No new keys are added to aggregation - only old data exists)
         helper.processDay(aggregation, timeToUse, "b", timeToUse.minusDays(31), updater);
         Assertions.assertEquals(1, aggregation.getDays().size());
@@ -74,6 +73,15 @@ public class TimeWindowDataAggregationHelperTest {
         // Process data for today + 60 (No new keys are added to aggregation - time is not good)
         helper.processDay(aggregation, timeToUse.plusDays(60), "c", timeToUse, updater);
         Assertions.assertEquals(0, aggregation.getDays().size());
+
+        // Process data for today + 375 (No new keys are added to aggregation - time is not good)
+        helper.processDay(aggregation, timeToUse.plusDays(375), "c", timeToUse, updater);
+        Assertions.assertEquals(0, aggregation.getDays().size());
+
+        helper.processDay(aggregation, timeToUse, "a", timeToUse.minusDays(5), updater);
+
+        helper.processDay(aggregation, DateTime.now().plusDays(35), "a", DateTime.now().plusDays(30), updater);
+        Assertions.assertEquals(1, aggregation.getDays().size());
     }
 
 
@@ -113,6 +121,15 @@ public class TimeWindowDataAggregationHelperTest {
         // Process data for today + 25 (No new keys are added to aggregation - time is not good)
         helper.processHours(aggregation, timeToUseInHourTest.plusHours(25), "c", timeToUseInHourTest, updater);
         Assertions.assertEquals(0, aggregation.getHours().size());
+
+        // Process data for today + 722 hours which is equal to a little more than 1 month (No new keys are added to aggregation - time is not good)
+        helper.processHours(aggregation, timeToUseInHourTest.plusHours(722), "c", timeToUseInHourTest, updater);
+        Assertions.assertEquals(0, aggregation.getHours().size());
+
+        helper.processHours(aggregation, timeToUseInHourTest, "a", timeToUseInHourTest.minusHours(5), updater);
+
+        helper.processHours(aggregation, DateTime.now().plusHours(35), "a", DateTime.now().plusHours(30), updater);
+        Assertions.assertEquals(1, aggregation.getHours().size());
     }
 
     @Test
@@ -151,6 +168,15 @@ public class TimeWindowDataAggregationHelperTest {
         // Process data for today + 61 (No new keys are added to aggregation - time is not good)
         helper.processMinutes(aggregation, timeToUseInMinuteTest.plusMinutes(61), "c", timeToUseInMinuteTest, updater);
         Assertions.assertEquals(0, aggregation.getMinutes().size());
+
+        // Process data for today + 1440 minutes which is exactly 1 day (No new keys are added to aggregation - time is not good)
+        helper.processMinutes(aggregation, timeToUseInMinuteTest.plusMinutes(1440), "c", timeToUseInMinuteTest, updater);
+        Assertions.assertEquals(0, aggregation.getMinutes().size());
+
+        helper.processMinutes(aggregation, timeToUseInMinuteTest, "a", timeToUseInMinuteTest.minusMinutes(5), updater);
+
+        helper.processMinutes(aggregation, DateTime.now().plusMinutes(86), "a", DateTime.now().plusMinutes(80), updater);
+        Assertions.assertEquals(1, aggregation.getMinutes().size());
     }
 
     @Test
@@ -185,6 +211,14 @@ public class TimeWindowDataAggregationHelperTest {
         Assertions.assertEquals(2, aggregation.getDaysHours().size());
         Assertions.assertEquals("processed-a", aggregation.getDaysHours().getStringObjectMap("7-9").get("17"));
         Assertions.assertEquals("processed-c", aggregation.getDaysHours().getStringObjectMap("8-8").get("17"));
+
+        // Process data for today + 370 days which is little more than 1 year (No new keys are added to aggregation - time is not good)
+        helper.processDayHour(aggregation, timeToUse.plusDays(370), "d", timeToUse, updater);
+        Assertions.assertEquals(1, aggregation.getDaysHours().size());
+        Assertions.assertEquals("processed-c", aggregation.getDaysHours().getStringObjectMap("8-8").get("17"));
+
+        helper.processDay(aggregation, DateTime.now().plusDays(35), "a", DateTime.now().plusDays(30), updater);
+        Assertions.assertEquals(0, aggregation.getDays().size());
 
         System.out.println(JsonUtils.asJson(aggregation));
     }
