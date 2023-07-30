@@ -18,7 +18,6 @@ public class TimeWindowDataAggregationHelper<T> {
     private final int daysHoursCount;
     private final int hoursCount;
     private final int minutesCount;
-    private int keysCount;
 
     public TimeWindowDataAggregationHelper(Config config) {
         this.hoursCount = config.hourAggregationWindow;
@@ -42,12 +41,11 @@ public class TimeWindowDataAggregationHelper<T> {
     void processDayHour(TimeWindowDataAggregation aggregation, DateTime currentTime, T event, DateTime eventTime, IAggregationUpdater<T> updater) {
         if (daysHoursCount <= 0) return;
 
-        if(getDaysSinceLastUpdate(currentTime, aggregation) > daysHoursCount) {
+        int keysCount =  getDaysSinceLastUpdate(currentTime, aggregation);
+
+        if(keysCount > daysHoursCount) {
             aggregation.getDaysHours().clear();
             keysCount = 0;
-        }
-        else {
-            keysCount = (int)(((((currentTime.getMillis() - aggregation.getUpdatedAt()) / 1000) / 60) / 60) / 24);
         }
 
         // Find what are the expired keys in the input aggregation
@@ -57,7 +55,7 @@ public class TimeWindowDataAggregationHelper<T> {
 
         // Call updater to add data for give day
         String key = eventTime.getMonthOfYear() + "-" + eventTime.getDayOfMonth();
-        if (getDayHourKeys(currentTime, daysHoursCount).contains(key) && !eventTime.isBefore(currentTime.minusDays(daysHoursCount))) {
+        if (eventTime.isAfter(currentTime.minusDays(daysHoursCount)) && !eventTime.isAfter(currentTime)) {
             if (!aggregation.getDaysHours().containsKey(key)) {
                 aggregation.getDaysHours().put(key, new StringObjectMap());
             }
@@ -71,12 +69,11 @@ public class TimeWindowDataAggregationHelper<T> {
     void processDay(TimeWindowDataAggregation aggregation, DateTime currentTime, T event, DateTime eventTime, IAggregationUpdater<T> updater) {
         if (daysCount <= 0) return;
 
-        if(getDaysSinceLastUpdate(currentTime, aggregation) > daysCount) {
+        int keysCount = getDaysSinceLastUpdate(currentTime, aggregation);
+
+        if(keysCount > daysCount) {
             aggregation.getDays().clear();
             keysCount = 0;
-        }
-        else {
-            keysCount = (int)(((((currentTime.getMillis() - aggregation.getUpdatedAt()) / 1000) / 60) / 60) / 24);
         }
 
         // Find what are the expired keys in the input aggregation
@@ -86,7 +83,7 @@ public class TimeWindowDataAggregationHelper<T> {
 
         // Call updater to add data for give day
         String key = eventTime.getMonthOfYear() + "-" + eventTime.getDayOfMonth();
-        if (getDayKeys(currentTime, daysCount).contains(key) && !eventTime.isBefore(currentTime.minusDays(daysCount))) {
+        if (eventTime.isAfter(currentTime.minusDays(daysCount)) && !eventTime.isAfter(currentTime)) {
             updater.update(aggregation.getDays(), key, event);
         }
 
@@ -96,12 +93,11 @@ public class TimeWindowDataAggregationHelper<T> {
     void processHours(TimeWindowDataAggregation aggregation, DateTime currentTime, T event, DateTime eventTime, IAggregationUpdater<T> updater) {
         if (hoursCount <= 0) return;
 
-        if(getHoursSinceLastUpdate(currentTime, aggregation) > hoursCount) {
+        int keysCount = getHoursSinceLastUpdate(currentTime, aggregation);
+
+        if(keysCount > hoursCount) {
             aggregation.getHours().clear();
             keysCount = 0;
-        }
-        else {
-            keysCount = (int)((((currentTime.getMillis() - aggregation.getUpdatedAt()) / 1000) / 60) / 60);
         }
 
         // Find what are the expired keys in the input aggregation
@@ -111,7 +107,7 @@ public class TimeWindowDataAggregationHelper<T> {
 
         // Call updater to add data for give day
         String key = eventTime.getDayOfMonth() + "-" + eventTime.getHourOfDay();
-        if (getHoursKeys(currentTime, hoursCount).contains(key) && !eventTime.isBefore(currentTime.minusHours(hoursCount))) {
+        if (eventTime.isAfter(currentTime.minusHours(hoursCount)) && !eventTime.isAfter(currentTime)) {
             updater.update(aggregation.getHours(), key, event);
         }
 
@@ -121,12 +117,11 @@ public class TimeWindowDataAggregationHelper<T> {
     void processMinutes(TimeWindowDataAggregation aggregation, DateTime currentTime, T event, DateTime eventTime, IAggregationUpdater<T> updater) {
         if (minutesCount <= 0) return;
 
-        if(getMinutesSinceLastUpdate(currentTime, aggregation) > minutesCount) {
+        int keysCount = getMinutesSinceLastUpdate(currentTime, aggregation);
+
+        if(keysCount > minutesCount) {
             aggregation.getMinutes().clear();
             keysCount = 0;
-        }
-        else {
-            keysCount = (int)(((currentTime.getMillis() - aggregation.getUpdatedAt()) / 1000) / 60);
         }
 
         // Find what are the expired keys in the input aggregation
@@ -136,11 +131,15 @@ public class TimeWindowDataAggregationHelper<T> {
 
         // Call updater to add data for give day
         String key = eventTime.getHourOfDay() + "-" + eventTime.getMinuteOfHour();
-        if (getMinuteKeys(currentTime, minutesCount).contains(key) && !eventTime.isBefore(currentTime.minusMinutes(minutesCount))) {
+        if (eventTime.isAfter(currentTime.minusMinutes(minutesCount)) && !eventTime.isAfter(currentTime)) {
             updater.update(aggregation.getMinutes(), key, event);
         }
 
         aggregation.setUpdatedAt(DateTime.now().getMillis());
+    }
+
+    List<String> getDayKeys(DateTime time) {
+        return getDayKeys(time, daysCount);
     }
 
     List<String> getDayKeys(DateTime time, int keysCount) {
@@ -154,6 +153,10 @@ public class TimeWindowDataAggregationHelper<T> {
         return keys;
     }
 
+    List<String> getDayHourKeys(DateTime time) {
+        return getDayHourKeys(time, daysHoursCount);
+    }
+
     List<String> getDayHourKeys(DateTime time, int keysCount) {
         DateTime start = time.minusDays(keysCount);
         List<String> keys = new ArrayList<>();
@@ -163,6 +166,10 @@ public class TimeWindowDataAggregationHelper<T> {
             keys.add(dayKey);
         }
         return keys;
+    }
+
+    List<String> getHoursKeys(DateTime time) {
+        return getHoursKeys(time, hoursCount);
     }
 
     List<String> getHoursKeys(DateTime time, int keysCount) {
@@ -176,6 +183,10 @@ public class TimeWindowDataAggregationHelper<T> {
         return keys;
     }
 
+    List<String> getMinuteKeys(DateTime time) {
+        return getMinuteKeys(time, minutesCount);
+    }
+
     List<String> getMinuteKeys(DateTime time, int keysCount) {
         DateTime start = time.minusMinutes(keysCount);
         List<String> keys = new ArrayList<>();
@@ -187,16 +198,16 @@ public class TimeWindowDataAggregationHelper<T> {
         return keys;
     }
 
-    long getMinutesSinceLastUpdate(DateTime currentTime, TimeWindowDataAggregation aggregation) {
-        return ((currentTime.getMillis() - aggregation.getUpdatedAt()) / 1000 ) / 60;
+    int getMinutesSinceLastUpdate(DateTime currentTime, TimeWindowDataAggregation aggregation) {
+        return (int)((currentTime.getMillis() - aggregation.getUpdatedAt()) / 1000 ) / 60;
     }
 
-    long getHoursSinceLastUpdate(DateTime currentTime, TimeWindowDataAggregation aggregation) {
-        return (((currentTime.getMillis() - aggregation.getUpdatedAt()) / 1000 ) / 60) / 60;
+    int getHoursSinceLastUpdate(DateTime currentTime, TimeWindowDataAggregation aggregation) {
+        return (int)(((currentTime.getMillis() - aggregation.getUpdatedAt()) / 1000 ) / 60) / 60;
     }
 
-    long getDaysSinceLastUpdate(DateTime currentTime, TimeWindowDataAggregation aggregation) {
-        return ((((currentTime.getMillis() - aggregation.getUpdatedAt()) / 1000 ) / 60) / 60) / 24;
+    int getDaysSinceLastUpdate(DateTime currentTime, TimeWindowDataAggregation aggregation) {
+        return (int)((((currentTime.getMillis() - aggregation.getUpdatedAt()) / 1000 ) / 60) / 60) / 24;
     }
 
     /**
