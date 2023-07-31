@@ -58,5 +58,17 @@ public class AggregateFunctionTest {
         helper.processDay(aggregation, timeToUse, 2, timeToUse.minusDays(30), updater);
         Assertions.assertEquals(1, aggregation.getDays().size());
         Assertions.assertEquals(6, aggregation.getDays().getLong("7-9"));
+
+        // Process data for today + 375 (No new keys are added to aggregation - time is not good)
+        helper.processDay(aggregation, timeToUse, 2, timeToUse.minusDays(375), updater);
+        Assertions.assertEquals(1, aggregation.getDays().size());
+
+        // Process data for today + 722 hours which is equal to a little more than 1 month (No new keys are added to aggregation - time is not good)
+        helper.processHours(aggregation, timeToUse, 2, timeToUse.minusHours(722), updater);
+        Assertions.assertEquals(1, aggregation.getHours().size());
+
+        // Process data for today + 1440 minutes which is exactly 1 day (No new keys are added to aggregation - time is not good)
+        helper.processMinutes(aggregation, timeToUse, 2, timeToUse.minusMinutes(1440), updater);
+        Assertions.assertEquals(2, aggregation.getMinutes().size());
     }
 }
