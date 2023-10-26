@@ -88,10 +88,12 @@ public interface CustomAggregationUpdater {
     class StringAppender implements TimeWindowDataAggregationHelper.IAggregationUpdater<StringObjectMap> {
         private final String newString;
         private final String separator;
+        private final int maxLength;
 
-        public StringAppender(String newString, String separator) {
+        public StringAppender(String newString, String separator, int maxLength) {
             this.newString = newString;
             this.separator = separator;
+            this.maxLength = maxLength;
         }
 
         @Override
@@ -105,8 +107,13 @@ public interface CustomAggregationUpdater {
                     merchants.add(s);
                 }
             }
-            merchants.add(newString);
-            data.put(key, String.join(this.separator, merchants));
+            if(merchants.size() > maxLength) {
+                data.put(key, String.join(this.separator, merchants));
+            }
+            else {
+                merchants.add(newString);
+                data.put(key, String.join(this.separator, merchants));
+            }
         }
     }
 }
